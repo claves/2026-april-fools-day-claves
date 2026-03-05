@@ -1391,7 +1391,7 @@
     <div id="spoiler-countdown" style="font-size:13px;color:var(--pink);font-weight:700;margin-bottom:10px">
       ⏱️ <span id="countdown-seconds">3</span>秒後に自動でお問い合わせページに遷移します...
     </div>
-    <a href="https://example.com" target="_blank" class="spoiler-link-btn">
+    <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="spoiler-link-btn">
       お問い合わせページへ →
     </a>
     <button class="pill-btn" onclick="closeSpoilerOverlay(true)" style="margin-top:10px;background:var(--pink-light)">
@@ -1612,7 +1612,8 @@ function openSpoilerOverlay() {
 
   // 3秒後に自動遷移
   spoilerRedirectTimer = setTimeout(() => {
-    window.open('https://example.com', '_blank');
+    const autoOpenWindow = window.open('https://example.com', '_blank', 'noopener,noreferrer');
+    if (autoOpenWindow) autoOpenWindow.opener = null;
   }, 3000);
 }
 
@@ -1621,7 +1622,8 @@ function closeSpoilerOverlay(shouldOpenContact = false) {
   clearSpoilerTimers();
   document.getElementById('spoiler-overlay').style.display = 'none';
   if (shouldOpenContact) {
-    window.open('https://example.com', '_blank');
+      const contactWindow = window.open('https://example.com', '_blank', 'noopener,noreferrer');
+      if (contactWindow) contactWindow.opener = null;
   }
 }
 
@@ -1858,6 +1860,21 @@ document.addEventListener('click', (e) => {
     coachShown = true; // 操作したら出さない
   }
 });
+
+// ブラウザバック時はお問い合わせ導線を介さず直接example.comを新タブで開く
+function setupBrowserBackRedirect() {
+  if (!window.history || !window.history.pushState) return;
+
+  window.history.pushState({ kumaBackTrap: true }, '', window.location.href);
+  window.addEventListener('popstate', () => {
+    closeSpoilerOverlay(false);
+    const backRedirectWindow = window.open('https://example.com', '_blank', 'noopener,noreferrer');
+    if (backRedirectWindow) backRedirectWindow.opener = null;
+    window.history.pushState({ kumaBackTrap: true }, '', window.location.href);
+  });
+}
+
+setupBrowserBackRedirect();
 
 // タイマー開始
 startIdleTimer();
