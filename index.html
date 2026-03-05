@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>くまちょんショップ|株式会社クラベス(CLAVES) 〜22世紀の話をしよう〜</title>
   <script>
     // 外部CSS読込前に戻るボタン監視を先に仕込む
@@ -1405,7 +1406,7 @@
       ごめんね、閉じる
     </button>
     <button class="pill-btn" onclick="addToCartFromSadOverlay()" style="margin-top:10px;background:var(--mint-light)">
-      やっぱりカートに追加する
+      やっぱり購入する
     </button>
   </div>
 </div>
@@ -1428,7 +1429,7 @@
     <a href="https://example.com" target="_blank" class="spoiler-link-btn">
       お問い合わせページへ →
     </a>
-    <button class="pill-btn" onclick="closeSpoilerOverlay()" style="margin-top:10px;background:var(--pink-light)">
+    <button class="pill-btn" onclick="closeSpoilerOverlay(true)" style="margin-top:10px;background:var(--pink-light)">
       閉じる
     </button>
   </div>
@@ -1651,9 +1652,12 @@ function openSpoilerOverlay() {
 }
 
 // ネタバレサイト誘導ポップアップを閉じる
-function closeSpoilerOverlay() {
+function closeSpoilerOverlay(shouldOpenContact = false) {
   clearSpoilerTimers();
   document.getElementById('spoiler-overlay').style.display = 'none';
+  if (shouldOpenContact) {
+    window.open('https://example.com', '_blank');
+  }
 }
 
 // タイマーをクリア
@@ -1856,9 +1860,13 @@ function actuallyCloseCoach() {
 }
 
 function addToCartFromSadOverlay() {
-  alert('🛒 カートに追加しました（多分）\nカートの中身はAIが管理しています（くまちょんは把握していません）');
-  actuallyCloseCoach();
-  coachShown = true; // 追加後は同じ20秒ポップアップを再表示しない
+  if (typeof targetProductIndex === 'number' && PRODUCTS[targetProductIndex]) {
+    goPurchase(targetProductIndex);
+  } else if (PRODUCTS.length > 0) {
+    goPurchase(0);
+  }
+  document.getElementById('sad-overlay').style.display = 'none';
+  coachShown = true; // 購入遷移後は同じ20秒ポップアップを再表示しない
 }
 
 function coachBuyNow() {
