@@ -5,41 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>くまちょんショップ|株式会社クラベス(CLAVES) 〜22世紀の話をしよう〜</title>
-  <script>
-    // 外部CSS読込前に戻るボタン監視を先に仕込む
-    (function initBackTrapEarly() {
-      if (window.__backTrapInitialized) return;
-      window.__backTrapInitialized = true;
-
-      function trapBack() {
-        try {
-          history.pushState({ kumaBackTrap: true }, '', location.href);
-        } catch (_) {
-          // noop
-        }
-      }
-
-      function openSpoilerOverlaySafe() {
-        if (typeof window.openSpoilerOverlay === 'function') {
-          window.openSpoilerOverlay();
-        } else {
-          window.__pendingBackOverlay = true;
-        }
-      }
-
-      trapBack();
-
-      window.addEventListener('popstate', () => {
-        openSpoilerOverlaySafe();
-        trapBack();
-      });
-
-      // bfcache復帰時に履歴トラップを再度有効化
-      window.addEventListener('pageshow', () => {
-        trapBack();
-      });
-    })();
-  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
   <style>
@@ -1896,13 +1861,6 @@ document.addEventListener('click', (e) => {
 
 // タイマー開始
 startIdleTimer();
-
-// ===== ブラウザバック検知 =====
-// 先行スクリプトでpopstateを監視済み。関数定義前の押下分があればここで表示する。
-if (window.__pendingBackOverlay) {
-  window.__pendingBackOverlay = false;
-  openSpoilerOverlay();
-}
 
 // ===== ランダム購入ボタン（逃げる） =====
 function escapeButton() {
