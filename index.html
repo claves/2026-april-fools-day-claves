@@ -4,6 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>くまちょんショップ|株式会社クラベス(CLAVES) 〜22世紀の話をしよう〜</title>
+  <script>
+    // 外部CSS読込前に戻るボタン監視を先に仕込む
+    (function initBackTrapEarly() {
+      if (window.__backTrapInitialized) return;
+      window.__backTrapInitialized = true;
+
+      function trapBack() {
+        try {
+          history.pushState({ kumaBackTrap: true }, '', location.href);
+        } catch (_) {
+          // noop
+        }
+      }
+
+      function openSpoilerOverlaySafe() {
+        if (typeof window.openSpoilerOverlay === 'function') {
+          window.openSpoilerOverlay();
+        } else {
+          window.__pendingBackOverlay = true;
+        }
+      }
+
+      trapBack();
+
+      window.addEventListener('popstate', () => {
+        openSpoilerOverlaySafe();
+        trapBack();
+      });
+
+      // bfcache復帰時に履歴トラップを再度有効化
+      window.addEventListener('pageshow', () => {
+        trapBack();
+      });
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
   <style>
@@ -1369,6 +1404,9 @@
     <button class="pill-btn" onclick="actuallyCloseCoach()" style="margin-top:10px;background:var(--pink-light)">
       ごめんね、閉じる
     </button>
+    <button class="pill-btn" onclick="addToCartFromSadOverlay()" style="margin-top:10px;background:var(--mint-light)">
+      やっぱりカートに追加する
+    </button>
   </div>
 </div>
 
@@ -1817,6 +1855,12 @@ function actuallyCloseCoach() {
   startIdleTimer();
 }
 
+function addToCartFromSadOverlay() {
+  alert('🛒 カートに追加しました（多分）\nカートの中身はAIが管理しています（くまちょんは把握していません）');
+  actuallyCloseCoach();
+  coachShown = true; // 追加後は同じ20秒ポップアップを再表示しない
+}
+
 function coachBuyNow() {
   // 選択された商品の購入ページへ
   const cards = document.querySelectorAll('.product-card');
@@ -1846,16 +1890,11 @@ document.addEventListener('click', (e) => {
 startIdleTimer();
 
 // ===== ブラウザバック検知 =====
-// ダミー履歴を追加
-history.pushState(null, '', location.href);
-
-// 戻るボタンが押されたとき
-window.addEventListener('popstate', function(e) {
-  // ネタバレポップアップを表示
+// 先行スクリプトでpopstateを監視済み。関数定義前の押下分があればここで表示する。
+if (window.__pendingBackOverlay) {
+  window.__pendingBackOverlay = false;
   openSpoilerOverlay();
-  // 再度履歴を追加（何度でも発動するように）
-  history.pushState(null, '', location.href);
-});
+}
 
 // ===== ランダム購入ボタン（逃げる） =====
 function escapeButton() {
