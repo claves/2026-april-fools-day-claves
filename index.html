@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>くまちょんショップ|株式会社クラベス(CLAVES) 〜22世紀の話をしよう〜</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bear-brown:   #7B4F2E;
+      --bear-dark:    #4A2E1A;
+      --pink:         #FF8FAB;
+      --pink-light:   #FFD6E0;
+      --pink-pale:    #FFF0F5;
+      --yellow:       #FFD166;
+      --yellow-light: #FFF4CC;
+      --mint:         #A8E6CF;
+      --mint-light:   #DCFCE7;
+      --lavender:     #C4B5FD;
+      --lavender-light:#EDE9FE;
+      --sky:          #93C5FD;
+      --bg:           #FFF8FB;
+      --card-bg:      #FFFFFF;
+      --text:         #4A2E1A;
+      --text-mid:     #8B6355;
+      --text-light:   #C4A882;
+      --border:       #F5C2D0;
+      --radius:       18px;
+      --radius-sm:    10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic Pro', 'ヒラギノ丸ゴ Pro', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== 背景ドット ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, #FFD6E0 1.5px, transparent 1.5px);
+      background-size: 28px 28px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== マーキー ===== */
+    .marquee-wrap {
+      background: var(--yellow);
+      color: var(--bear-brown);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 7px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      z-index: 1;
+      border-bottom: 2px dashed var(--bear-brown);
+    }
+    .marquee-inner { display: inline-block; animation: scroll 20s linear infinite; }
+    @keyframes scroll { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+
+    /* ===== ヘッダー ===== */
+    .header {
+      background: white;
+      border-bottom: 3px solid var(--pink);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      box-shadow: 0 3px 12px rgba(255,143,171,0.15);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-name {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--pink);
+      letter-spacing: 0.02em;
+    }
+    .logo-text {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--bear-brown);
+      line-height: 1.2;
+    }
+    .logo-text small {
+      display: block;
+      font-size: 9px;
+      color: var(--text-light);
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-weight: 400;
+    }
+    .header-right { display: flex; gap: 10px; align-items: center; }
+    .cart-btn {
+      background: var(--pink);
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 3px 0 #E06080;
+      animation: cartBounce 2.5s ease infinite;
+      transition: transform 0.1s;
+    }
+    .cart-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #E06080; }
+    @keyframes cartBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+    .ai-version {
+      background: var(--lavender-light);
+      color: var(--lavender);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 50px;
+      border: 1.5px solid var(--lavender);
+    }
+
+    /* ===== AI吹き出し ===== */
+    .speech-bubble {
+      background: white;
+      border: 2.5px solid var(--pink);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin: 14px 16px;
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: var(--text-mid);
+      position: relative;
+      box-shadow: 0 4px 12px rgba(255,143,171,0.12);
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: -16px; left: 28px;
+      border: 8px solid transparent;
+      border-bottom-color: var(--pink);
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      top: -12px; left: 30px;
+      border: 6px solid transparent;
+      border-bottom-color: white;
+    }
+    .bubble-tag {
+      display: inline-block;
+      background: var(--pink);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 50px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .speech-bubble strong { color: var(--pink); }
+    .blink { animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ===== ソートバー ===== */
+    .sort-bar {
+      background: var(--pink-pale);
+      border-bottom: 2px dashed var(--border);
+      padding: 10px 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-mid);
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    .sort-bar select {
+      background: white;
+      color: var(--bear-brown);
+      border: 2px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 50px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .sort-bar select:focus { outline: none; border-color: var(--pink); }
+
+    /* ===== 商品グリッド ===== */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 18px;
+      padding: 18px 16px 360px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .product-card {
+      background: white;
+      border: 2.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+      box-shadow: 0 4px 0 var(--border);
+    }
+    .product-card:hover {
+      transform: rotate(0deg) translateY(-4px) !important;
+      box-shadow: 0 10px 0 var(--pink-light);
+      border-color: var(--pink);
+    }
+    .product-card:nth-child(1) { transform: rotate(2deg); }
+    .product-card:nth-child(2) { transform: rotate(-1.5deg); }
+    .product-card:nth-child(3) { transform: rotate(2.8deg); }
+    .product-card:nth-child(4) { transform: rotate(-2.2deg); }
+    .product-card:nth-child(5) { transform: rotate(1.5deg); }
+    .product-card:nth-child(6) { transform: rotate(-2.8deg); }
+
+    .product-emoji-wrap {
+      background: var(--pink-pale);
+      border-radius: var(--radius-sm);
+      font-size: 56px;
+      text-align: center;
+      padding: 16px 0;
+      margin-bottom: 12px;
+      position: relative;
+      border: 2px dashed var(--border);
+    }
+    .ai-loading-badge {
+      position: absolute;
+      bottom: 5px; right: 7px;
+      background: var(--lavender);
+      color: white;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 50px;
+      animation: spin 3s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .product-tag {
+      display: inline-block;
+      background: var(--yellow-light);
+      color: var(--bear-brown);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 50px;
+      border: 1.5px solid var(--yellow);
+      margin-bottom: 7px;
+    }
+    .product-name {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 5px;
+      line-height: 1.5;
+    }
+    .product-desc {
+      font-size: 10.5px;
+      color: var(--text-light);
+      margin-bottom: 9px;
+      line-height: 1.5;
+    }
+    .product-price {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--pink);
+    }
+    .product-tax {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+    .price-note {
+      font-size: 9px;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .btn-maybe {
+      width: 100%;
+      background: white;
+      color: var(--mint);
+      border: 2px solid var(--mint);
+      padding: 7px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      transition: background 0.15s;
+    }
+    .btn-maybe:hover { background: var(--mint-light); }
+    .btn-buy {
+      width: 100%;
+      background: var(--pink);
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 3px 0 #E06080;
+      transition: transform 0.1s;
+    }
+    .btn-buy:hover { background: #FF7098; }
+    .btn-buy:active { transform: translateY(2px); box-shadow: 0 1px 0 #E06080; }
+
+    /* ===== ページ ===== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== 購入ページ ===== */
+    .purchase-wrap {
+      max-width: 620px;
+      margin: 20px auto;
+      padding: 0 16px 100px;
+      position: relative;
+      z-index: 1;
+    }
+    .purchase-wrap h2 {
+      text-align: center;
+      font-family: 'Kaisei Decol', serif;
+      font-size: 20px;
+      color: var(--bear-brown);
+      margin-bottom: 16px;
+    }
+
+    .order-card {
+      background: white;
+      border: 2.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 0 var(--border);
+    }
+    .order-card h3 {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-light);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .order-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1.5px dashed var(--border);
+      font-size: 12px;
+      color: var(--text-mid);
+    }
+    .order-row:last-child { border-bottom: none; }
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 2.5px solid var(--border);
+    }
+    .order-total .label { font-size: 14px; font-weight: 800; color: var(--text); }
+    .order-total .amount { font-size: 22px; font-weight: 800; color: var(--pink); }
+    .price-note-sm {
+      font-size: 9px;
+      color: var(--text-light);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--bear-brown);
+      background: var(--yellow-light);
+      border-left: 4px solid var(--yellow);
+      padding: 7px 10px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 20px 0 12px;
+    }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin-bottom: 5px;
+    }
+    .form-group label .req { color: var(--pink); }
+    .form-group label .hint { color: var(--text-light); font-weight: 400; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: white;
+      color: var(--text);
+      border: 2px solid var(--border);
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13px;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--pink);
+    }
+    .form-row { display: flex; gap: 8px; align-items: center; }
+    .form-row .unit { font-size: 12px; color: var(--text-mid); font-weight: 700; white-space: nowrap; }
+
+    /* AIが決めたBOX */
+    .ai-fixed-box {
+      background: var(--lavender-light);
+      border: 2px solid var(--lavender);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin: 8px 0;
+      font-size: 11.5px;
+      color: var(--text-mid);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .ai-fixed-box .bear-icon { font-size: 24px; flex-shrink: 0; }
+    .ai-fixed-box .value {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--pink);
+      display: block;
+      margin-top: 2px;
+    }
+    .ai-fixed-box .no-change { font-size: 9px; color: var(--text-light); display: block; margin-top: 2px; }
+
+    /* 同意 */
+    .checkbox-list { margin: 10px 0; }
+    .checkbox-list label {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 11.5px;
+      color: var(--text-mid);
+      margin-bottom: 9px;
+      cursor: pointer;
+      line-height: 1.5;
+    }
+    .checkbox-list input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--pink);
+    }
+
+    /* ===== ピル型選択ボタン ===== */
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill-btn {
+      background: white;
+      color: var(--text-mid);
+      border: 2px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+    .pill-btn:hover {
+      border-color: var(--pink);
+      background: var(--pink-pale);
+    }
+    .pill-btn.selected {
+      background: var(--pink);
+      color: white;
+      border-color: var(--pink);
+      box-shadow: 0 2px 0 #E06080;
+    }
+
+    /* ===== ボタンエリア ===== */
+    .btn-area {
+      text-align: center;
+      margin-top: 24px;
+    }
+    /* 大きな目立つボタン → 実はキャンセル */
+    .btn-big-cancel {
+      background: var(--pink);
+      color: white;
+      border: none;
+      padding: 20px 60px;
+      font-size: 20px;
+      font-family: inherit;
+      font-weight: 800;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #D0507A;
+      display: block;
+      width: 100%;
+      margin-bottom: 12px;
+      animation: bigBtnPulse 2s ease infinite;
+    }
+    @keyframes bigBtnPulse {
+      0%,100% { box-shadow: 0 6px 0 #D0507A, 0 0 0 0 rgba(255,143,171,0.3); }
+      50%      { box-shadow: 0 6px 0 #D0507A, 0 0 0 12px rgba(255,143,171,0); }
+    }
+    .btn-big-cancel:active { transform: translateY(4px); box-shadow: 0 2px 0 #D0507A; }
+    /* 極小の確定ボタン */
+    .btn-tiny-confirm {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px dashed var(--border);
+      padding: 4px 12px;
+      font-size: 9px;
+      font-family: inherit;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+    .btn-tiny-confirm:hover { color: var(--text-mid); }
+
+    /* ===== コーチマーク（強制チュートリアル） ===== */
+    .coach-spotlight {
+      position: relative;
+      z-index: 8001;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.75), 0 0 40px 10px var(--pink) !important;
+      animation: spotlightPulse 1.5s ease infinite;
+      transform: rotate(0deg) !important;
+    }
+    @keyframes spotlightPulse {
+      0%, 100% { box-shadow: 0 0 0 9999px rgba(0,0,0,0.75), 0 0 40px 10px var(--pink); }
+      50% { box-shadow: 0 0 0 9999px rgba(0,0,0,0.75), 0 0 60px 20px var(--yellow); }
+    }
+    .coach-bubble {
+      position: absolute;
+      background: white;
+      border: 3px solid var(--pink);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      z-index: 8002;
+      max-width: 300px;
+      box-shadow: 0 8px 30px rgba(255,143,171,0.4);
+      animation: bubbleBounce 0.4s ease;
+      overflow: visible;
+    }
+    @keyframes bubbleBounce {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .coach-bubble::before {
+      content: '';
+      position: absolute;
+      top: -14px; left: 30px;
+      border: 7px solid transparent;
+      border-bottom-color: var(--pink);
+    }
+    .coach-bubble::after {
+      content: '';
+      position: absolute;
+      top: -9px; left: 32px;
+      border: 5px solid transparent;
+      border-bottom-color: white;
+    }
+    .coach-close {
+      position: absolute;
+      top: -12px; right: -12px;
+      background: var(--lavender);
+      color: white;
+      border: 2px solid white;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .coach-close:hover { transform: scale(1.1); }
+
+    /* 悲しみオーバーレイ */
+    .sad-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: sadFadeIn 0.3s ease;
+    }
+    @keyframes sadFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .sad-message {
+      background: white;
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      text-align: center;
+      animation: sadShake 0.5s ease;
+      border: 3px solid var(--pink);
+      box-shadow: 0 10px 40px rgba(255,143,171,0.3);
+    }
+    @keyframes sadShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+
+    /* コーチマーク：ボタン強調エリア */
+    .coach-btn-area {
+      margin-top: 24px;
+      padding: 14px;
+      border: 3px dashed var(--yellow);
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--yellow-light) 0%, var(--pink-pale) 100%);
+      position: relative;
+      animation: borderDance 1s linear infinite;
+      overflow: visible;
+    }
+    @keyframes borderDance {
+      0%, 100% { border-color: var(--yellow); }
+      50% { border-color: var(--pink); }
+    }
+    .coach-btn-area .btn-buy {
+      width: 100%;
+      animation: btnPulseGlow 1.2s ease infinite;
+      position: relative;
+      font-size: 14px;
+      padding: 12px;
+    }
+    @keyframes btnPulseGlow {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 3px 0 #E06080, 0 0 0 0 rgba(255,143,171,0.4);
+      }
+      50% {
+        transform: scale(1.03);
+        box-shadow: 0 3px 0 #E06080, 0 0 20px 8px rgba(255,143,171,0.5);
+      }
+    }
+    /* 指差しアイコン */
+    .coach-pointer {
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 28px;
+      animation: pointerBounce 0.6s ease infinite;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    @keyframes pointerBounce {
+      0%, 100% { transform: translateY(-50%) translateX(0); }
+      50% { transform: translateY(-50%) translateX(-8px); }
+    }
+    /* ここだよラベル */
+    .coach-here-label {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-block;
+      margin: 0;
+      padding: 4px 8px;
+      min-width: 92px;
+      max-width: 100%;
+      background: #fff;
+      color: var(--pink);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.25;
+      border: 2px solid var(--pink);
+      border-radius: 12px;
+      overflow: visible;
+      white-space: nowrap;
+      animation: labelBounce 0.8s ease infinite;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+      z-index: 1;
+    }
+    @keyframes labelBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-4px); }
+    }
+    .coach-here-label::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -7px;
+      border: 7px solid transparent;
+      border-top: 7px solid var(--pink);
+    }
+    .coach-here-label::after {
+      content: '';
+      position: absolute;
+      top: calc(100% - 1px);
+      left: 50%;
+      margin-left: -6px;
+      border: 6px solid transparent;
+      border-top: 6px solid #fff;
+    }
+    /* キラキラ */
+    .coach-sparkle {
+      position: absolute;
+      font-size: 16px;
+      animation: sparkleFloat 1.5s ease infinite;
+    }
+    .coach-sparkle:nth-child(1) { top: -5px; left: 5px; animation-delay: 0s; }
+    .coach-sparkle:nth-child(2) { top: -5px; right: 5px; animation-delay: 0.3s; }
+    .coach-sparkle:nth-child(3) { bottom: -5px; left: 15px; animation-delay: 0.6s; }
+    .coach-sparkle:nth-child(4) { bottom: -5px; right: 15px; animation-delay: 0.9s; }
+    @keyframes sparkleFloat {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    /* ===== クッキーバナー ===== */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      border-top: 3px solid var(--pink);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 9999;
+      font-size: 11px;
+      color: var(--text-mid);
+      box-shadow: 0 -4px 20px rgba(255,143,171,0.15);
+    }
+    .cookie-label { font-size: 11px; font-weight: 800; color: var(--pink); flex-shrink: 0; }
+    .cookie-text { flex: 1; line-height: 1.5; }
+    .cookie-btn {
+      background: var(--yellow);
+      color: var(--bear-brown);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 3px 0 #D4A800;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ===== フッター ===== */
+    .site-footer {
+      position: relative;
+      z-index: 1;
+      margin: 18px 16px 110px;
+      padding: 14px 16px;
+      background: white;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+      color: var(--text-mid);
+      font-size: 11px;
+      line-height: 1.7;
+      box-shadow: 0 4px 0 var(--pink-light);
+    }
+    .site-footer .company-name {
+      display: block;
+      font-weight: 700;
+      color: var(--bear-brown);
+    }
+
+    /* ===== 起動時AI最適化確認 ===== */
+    .opt-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 12000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .opt-card {
+      width: min(520px, 100%);
+      background: white;
+      border: 3px solid var(--pink);
+      border-radius: var(--radius);
+      box-shadow: 0 16px 48px rgba(255,143,171,0.35);
+      padding: 22px 20px;
+      text-align: center;
+    }
+    .opt-title {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 22px;
+      color: var(--bear-brown);
+      margin-bottom: 10px;
+    }
+    .opt-text {
+      font-size: 13px;
+      color: var(--text-mid);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .opt-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .opt-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 22px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .opt-btn-yes {
+      background: var(--mint);
+      color: var(--bear-dark);
+      box-shadow: 0 3px 0 #79C8A8;
+    }
+    .opt-btn-no {
+      background: var(--pink-light);
+      color: var(--bear-brown);
+      box-shadow: 0 3px 0 #E9AEBE;
+    }
+    .opt-btn-ok {
+      background: var(--pink);
+      color: white;
+      box-shadow: 0 3px 0 #D0507A;
+      display: none;
+    }
+    .ai-opt-btn {
+      background: linear-gradient(180deg, #F5F1FF 0%, #EDE9FE 100%);
+      color: #7C6ACF;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 50px;
+      border: 2px solid #B8A8FB;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      box-shadow: 0 3px 0 #9E88EB;
+      transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+    }
+    .ai-opt-btn:hover {
+      background: linear-gradient(180deg, #EDE9FE 0%, #DDD6FE 100%);
+      color: #6D5BC3;
+    }
+    .ai-opt-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #9E88EB;
+    }
+
+    /* ===== ネタバレサイト誘導ポップアップ ===== */
+    .spoiler-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: sadFadeIn 0.3s ease;
+    }
+    .spoiler-message {
+      background: white;
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      text-align: center;
+      animation: bubbleBounce 0.4s ease;
+      border: 3px solid var(--pink);
+      box-shadow: 0 10px 40px rgba(255,143,171,0.3);
+    }
+    .spoiler-link-btn {
+      display: inline-block;
+      background: var(--pink);
+      color: white;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 0 4px 0 #D0507A;
+      transition: transform 0.1s;
+      animation: bigBtnPulse 2s ease infinite;
+    }
+    .spoiler-link-btn:hover {
+      background: #FF7098;
+    }
+    .spoiler-link-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #D0507A;
+    }
+
+    /* ===== ランダム購入ボタン（右下固定・ふわふわ・逃げる） ===== */
+    .random-buy-btn {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      background: linear-gradient(135deg, var(--yellow) 0%, var(--pink) 100%);
+      color: white;
+      border: 3px solid white;
+      padding: 14px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 6px 20px rgba(255,143,171,0.4), 0 4px 0 #D0507A;
+      z-index: 800;
+      animation: floatBounce 3s ease-in-out infinite;
+      transition: left 0.3s ease-out, bottom 0.3s ease-out, right 0.3s ease-out;
+      white-space: nowrap;
+    }
+    .random-buy-btn:active {
+      box-shadow: 0 3px 10px rgba(255,143,171,0.4), 0 1px 0 #D0507A;
+    }
+    @keyframes floatBounce {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      25% { transform: translateY(-8px) rotate(1deg); }
+      50% { transform: translateY(-4px) rotate(3deg); }
+      75% { transform: translateY(-12px) rotate(-1deg); }
+    }
+    .random-buy-btn.escaping {
+      animation: none;
+    }
+
+    /* ===== 3.5件表示モード ===== */
+    .products-grid.half-mode .product-card {
+      display: none;
+    }
+    .products-grid.half-mode .product-card:nth-child(1),
+    .products-grid.half-mode .product-card:nth-child(2),
+    .products-grid.half-mode .product-card:nth-child(3) {
+      display: block;
+    }
+    .products-grid.half-mode .product-card:nth-child(4) {
+      display: block;
+      position: relative;
+      max-width: 50%;
+      overflow: hidden;
+    }
+    .products-grid.half-mode .product-card:nth-child(4)::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 60px;
+      background: linear-gradient(to right, transparent, var(--bg));
+      pointer-events: none;
+    }
+
+    /* ===== SP対応 ===== */
+    @media (max-width: 768px) {
+      /* ヘッダー */
+      .header {
+        padding: 8px 12px;
+      }
+      .logo-name {
+        font-size: 18px;
+      }
+      .logo-text small {
+        font-size: 8px;
+      }
+      .header-right {
+        gap: 6px;
+      }
+      .ai-opt-btn {
+        padding: 6px 10px;
+        font-size: 10px;
+      }
+      .cart-btn {
+        padding: 7px 12px;
+        font-size: 11px;
+      }
+
+      /* クッキーバナー */
+      .cookie-banner {
+        padding: 8px 12px;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .cookie-label {
+        width: 100%;
+        font-size: 10px;
+      }
+      .cookie-text {
+        font-size: 10px;
+        line-height: 1.4;
+      }
+      .cookie-btn {
+        padding: 6px 12px;
+        font-size: 10px;
+      }
+
+      /* 商品一覧下部余白 */
+      .products-grid {
+        padding-bottom: 360px;
+      }
+      .site-footer {
+        margin: 12px 12px 120px;
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="opt-overlay" class="opt-overlay">
+  <div class="opt-card">
+    <div class="opt-title">AI最適化いる？</div>
+    <div class="opt-text" id="opt-text">
+      くまちょんショップを快適に使うには、AI最適化が必要です。<br>
+      AI最適化を開始しますか？
+    </div>
+    <div class="opt-actions" id="opt-actions">
+      <button class="opt-btn opt-btn-yes" id="opt-yes-btn" type="button" onclick="answerOptimization('yes')">いる！</button>
+      <button class="opt-btn opt-btn-no" id="opt-no-btn" type="button" onclick="answerOptimization('no')">いらない</button>
+      <button class="opt-btn opt-btn-ok" id="opt-ok-btn" type="button" onclick="answerOptimization('ok')">OK（仕方ない）</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 商品一覧ページ ===================== -->
+<div id="page-list" class="page active">
+
+  <div class="header">
+    <div class="logo">
+      <div>
+        <span class="logo-name">くまちょんショップ</span>
+        <div class="logo-text">
+          <small>AIに任せて作ったよ！ v0.1β（開発中）</small>
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="ai-opt-btn" id="opt-trigger-btn" type="button" onclick="openOptimizationGate()">🤖 AI最適化する</button>
+      <button class="cart-btn" onclick="alert('🛒 カートを開こうとしたよ！\n\nでもAIがまだ読み込み中…\n（永遠に読み込み中です）')">🛒 カート?</button>
+    </div>
+  </div>
+
+  <div class="marquee-wrap">
+    <span class="marquee-inner">
+      ✨ くまちょんショップへようこそ！くまちょんがAIに任せて0.3秒で作ったよ🎉　🎀 今だけ特別価格（根拠はないよ）　🚚 送料はAIが毎回考えるから毎回変わるよ　⚠️ 使いにくいのはAIにやらせたからだよ　✨ くまちょんショップへようこそ！くまちょんがAIに任せて0.3秒で作ったよ🎉
+    </span>
+  </div>
+
+  <div class="speech-bubble">
+    <span class="bubble-tag">くまちょんより</span>
+    <strong>お知らせ</strong><br>
+    このお店はくまちょんがAIに任せて作りました！表示がおかしい・価格が変・説明が謎なのは<span class="blink">ぜんぶAIがやりました</span>。くまちょんは悪くないです。<br>
+    <small style="color:var(--text-light)">AIは現在 <strong style="color:var(--pink)">247個</strong> のデータを学習中（何のデータかくまちょんも知らない）。学習が終わるともっとよくなる予定（未定）。</small>
+  </div>
+
+  <div class="sort-bar">
+    <span>🔀 並び替え：</span>
+    <select onchange="this.selectedIndex=0; alert('ソートしました\n（見た目は変わりません。AIの仕様です）')">
+      <option>AIおすすめ順（根拠不明）</option>
+      <option>運気順</option>
+      <option>謎順</option>
+      <option>逆順（理由不明）</option>
+      <option>くまちょんが好きな順</option>
+    </select>
+    <span>📦 表示数：</span>
+    <select id="display-count-select" onchange="changeDisplayCount(this.value)">
+      <option value="3">3件</option>
+      <option value="3.5">3.5件</option>
+      <option value="6" selected>6件</option>
+      <option value="47">47件</option>
+      <option value="all">全件（非推奨）</option>
+    </select>
+    <span style="margin-left:auto;font-size:10px;color:var(--text-light)">全 <span class="blink">??</span> 件（AIが数えています）</span>
+  </div>
+
+  <div class="products-grid" id="products-grid"></div>
+
+  <!-- ランダム購入ボタン（右下固定・ふわふわ・逃げる） -->
+  <button class="random-buy-btn" id="random-buy-btn" onmouseenter="escapeButton()" onclick="randomPurchase()">
+    🎲 ランダムで購入する
+  </button>
+
+</div>
+
+
+<!-- ===================== 購入ページ ===================== -->
+<div id="page-purchase" class="page">
+
+  <div class="header">
+    <button onclick="showList()" style="background:white;border:2px solid var(--border);color:var(--text-mid);padding:7px 14px;border-radius:50px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;">戻る？</button>
+    <div class="logo">
+      <div>
+        <span class="logo-name" style="font-size:20px">くまちょんショップ</span>
+        <div class="logo-text"><small>ご購入手続き（AIが最適化済み）</small></div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--text-light);font-weight:700;">🤖 AI最適化中…</div>
+  </div>
+
+  <div class="marquee-wrap">
+    <span class="marquee-inner">
+      ⚠️ 入力中にAIがフォームを最適化することがあるよ　⚠️ 入力内容がリセットされてもAIの仕様だよ　⚠️ 必須項目は全部必須だよ（当然だよ）
+    </span>
+  </div>
+
+  <div class="purchase-wrap">
+
+    <div class="speech-bubble">
+      <span class="bubble-tag">くまちょんより</span>
+      <strong>お知らせ</strong><br>
+      購入フォームもAIに任せました！フォームは<span class="blink">随時AI最適化</span>されるため、内容が変わっても驚かないでください。くまちょんは把握していません。<br>
+    </div>
+
+    <h2>✨ ご注文内容の確認</h2>
+
+    <!-- 注文サマリー -->
+    <div class="order-card">
+      <h3>🛒 ご注文内容（AIが確認しました・多分）</h3>
+      <div class="order-row">
+        <span id="s-name" style="font-size:11px;max-width:320px">商品名</span>
+        <span style="color:var(--text-light);font-size:11px">×47個</span>
+      </div>
+      <div class="order-row">
+        <span>小計</span><span id="s-subtotal" style="font-weight:700">¥計算中…</span>
+      </div>
+      <div class="order-row">
+        <span>送料（AIくん最適化）</span><span id="s-shipping" style="color:var(--pink);font-weight:700">¥計算中…</span>
+      </div>
+      <div class="order-row">
+        <span style="color:var(--text-light)">くまAI利用手数料</span>
+        <span id="s-aifee" style="color:var(--text-light)">¥変動中…</span>
+      </div>
+      <div class="order-total">
+        <span class="label">合計</span>
+        <span class="amount" id="s-total">¥計算中…</span>
+      </div>
+      <div class="price-note-sm" id="price-note">※ AIが最終確認中のため、価格は2秒ごとに変動します（くまちょんも知りません）</div>
+    </div>
+
+    <!-- クーポンコード -->
+    <div class="order-card" id="coupon-section">
+      <h3>🎫 クーポンコード入力</h3>
+      <div class="form-group" style="margin-bottom:8px">
+        <label>クーポンコード <span class="hint">（お持ちの方は入力してね）</span></label>
+        <div class="form-row">
+          <input type="text" id="coupon-input" placeholder="例: KUMA-FREE-2026" style="flex:1">
+          <button type="button" class="pill-btn" onclick="applyCoupon()" style="white-space:nowrap">適用する</button>
+        </div>
+        <div style="font-size:9px;color:var(--text-light);margin-top:6px">
+          ※ 有効なコード: <strong style="color:var(--pink)">KUMA-FREE-2026</strong>（内緒だよっ）
+        </div>
+      </div>
+      <div id="coupon-result" style="display:none"></div>
+    </div>
+
+    <!-- お客様情報 -->
+    <div class="section-title">🎀 お客様情報（全項目必須です）</div>
+
+    <div class="form-group">
+      <label>あなたのくまタイプ <span class="req">※必須</span> <span class="hint">（AIが性格を推定します）</span></label>
+      <div class="pill-group">
+        <button type="button" class="pill-btn" onclick="selectPill(this)">野生のくま</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">都会派くま</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">情報弱者くま</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">量産型くま</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">伝説のくま（SSR）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">未確認生命体くま</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>あなたの製造ロット <span class="req">※必須</span> <span class="hint">（AIがバージョン管理に使います）</span></label>
+      <div class="pill-group">
+        <button type="button" class="pill-btn" onclick="selectPill(this)">v0.1（試作品）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">v1.0（初期ロット）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">v2.3（安定版）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">β版（バグあり）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">開発中（自己申告）</button>
+      </div>
+    </div>
+
+    <!-- AI最適化に必要な情報 -->
+    <div class="section-title">🤖 AIの最適化に必要な情報（全項目必須です）</div>
+
+    <div class="form-group">
+      <label>精神年齢帯（AI推定用） <span class="req">※必須</span> <span class="hint">（AIが対応レベルを調整します）</span></label>
+      <div class="pill-group">
+        <button type="button" class="pill-btn" onclick="selectPill(this)">3歳未満（破壊神）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">小学生帯</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">社会人（疲労型）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">仙人クラス</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">概念</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>配送優先度モード <span class="req">※必須</span> <span class="hint">（AIが気持ちを汲み取ります）</span></label>
+      <div class="pill-group">
+        <button type="button" class="pill-btn" onclick="selectPill(this)">通常配送</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">急ぎ（気持ちだけ）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">やや焦り</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">哲学モード</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">感情未接続</button>
+      </div>
+    </div>
+
+    <!-- 連絡先 -->
+    <div class="section-title">📞 ご連絡先</div>
+
+    <div class="form-group">
+      <label>緊急連絡チャネル <span class="req">※必須</span> <span class="hint">（AIが最適な連絡手段を選定します）</span></label>
+      <div class="pill-group">
+        <button type="button" class="pill-btn" onclick="selectPill(this)">テレパシー</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">狼煙</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">夢経由通知</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">プッシュ通知（届かない）</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">連絡不可</button>
+      </div>
+    </div>
+
+    <!-- お届け先 -->
+    <div class="section-title">🏠 お届け先住所</div>
+
+    <div class="form-group">
+      <label>現在の存在階層 <span class="req">※必須</span> <span class="hint">（AIが次元を特定します）</span></label>
+      <div class="pill-group">
+        <button type="button" class="pill-btn" onclick="selectPill(this)">現実世界</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">仮想空間</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">夢の中</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">サーバーラック裏</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">くま王国</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>エリアコード <span class="req">※必須</span> <span class="hint">（AIが座標変換します）</span></label>
+      <div class="pill-group">
+        <button type="button" class="pill-btn" onclick="selectPill(this)">エリア404</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">エリアAI-01</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">第三倉庫</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">未来地区</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">不明領域</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>座標指定方式 <span class="req">※必須</span> <span class="hint">（AIが配送ルートを最適化します）</span></label>
+      <div class="pill-group">
+        <button type="button" class="pill-btn" onclick="selectPill(this)">X:000 Y:000</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">GPS未対応</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">推測困難</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">AI自動割当</button>
+        <button type="button" class="pill-btn" onclick="selectPill(this)">秘密</button>
+      </div>
+    </div>
+
+    <!-- お支払い方法 -->
+    <div class="section-title">💰 お支払い方法（AIが最適化します）</div>
+
+    <div class="ai-fixed-box">
+      <div>
+        <strong>お支払い方法</strong>を選んでください<br>
+        <div class="pill-group" style="margin:8px 0">
+          <button type="button" class="pill-btn" onclick="selectPayment('salmon')">🐟 鮭払い</button>
+          <button type="button" class="pill-btn" onclick="selectPayment('ramen')">🍜 ラーメン払い</button>
+        </div>
+        <span class="value" id="payment-result">未選択（AIが待機中）</span>
+        <span class="no-change">※ AIが最適化するため、選択と結果が異なる場合があります。くまちょんは関与していません。</span>
+      </div>
+    </div>
+
+    <!-- お届け予定日 -->
+    <div class="section-title">🚚 お届け予定日（AIが最適化します）</div>
+    <div class="ai-fixed-box">
+      <div>
+        AIが最適な <strong>お届け予定日</strong> を選びました<br>
+        <span class="value">2025年13月47日（土日祝）</span>
+        <span class="no-change">※ AIが最適と判断しました。くまちょんへのクレームはご遠慮ください。変更不可。</span>
+      </div>
+    </div>
+
+    <!-- ボタン（逆転）-->
+    <div class="btn-area">
+      <div style="font-size:10px;color:var(--text-light);margin-bottom:10px">✨ どちらかのボタンを押してください</div>
+      <!-- 巨大・目立つ → 実はキャンセル -->
+      <button class="btn-big-cancel" onclick="handleCancel()">
+        ✅ 購入を確定する
+      </button>
+      <!-- 極小・目立たない → 実は購入完了 -->
+      <button class="btn-tiny-confirm" onclick="handleConfirm()">❌ キャンセルしない（購入しない）</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== コーチマーク吹き出し（強制チュートリアル） ===== -->
+<div class="coach-bubble" id="coach-bubble" style="display:none">
+  <button class="coach-close" onclick="tryCloseCoach()">×</button>
+  <div style="font-weight:800;color:var(--pink);margin-bottom:8px;font-size:13px">
+    くまちょんより
+  </div>
+  <div style="font-size:13px;line-height:1.7;color:var(--text-mid)" id="coach-message">
+    僕のおすすめをカートに入れておくね！
+  </div>
+  <div class="coach-btn-area">
+    <span class="coach-sparkle">✨</span>
+    <span class="coach-sparkle">✨</span>
+    <span class="coach-sparkle">✨</span>
+    <span class="coach-sparkle">✨</span>
+    <span class="coach-here-label">👇 ここをクリック！</span>
+    <button class="btn-buy" onclick="coachBuyNow()">
+      今すぐ購入する✨
+    </button>
+    <span class="coach-pointer">👈</span>
+  </div>
+  <div style="font-size:9px;color:var(--text-light);margin-top:10px;text-align:center">
+    ※ くまちょんがあなたのために選びました（AI任せ）
+  </div>
+</div>
+
+<!-- ===== 悲しみオーバーレイ ===== -->
+<div class="sad-overlay" id="sad-overlay" style="display:none">
+  <div class="sad-message">
+    <div style="font-size:48px;margin-bottom:14px">😢</div>
+    <div style="font-weight:800;color:var(--text);font-size:18px">
+      くまちょんが悲しんでいます…
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin:12px 0;line-height:1.6">
+      せっかくおすすめしたのに…<br>
+      くまちょんはあなたのことを思って選んだんだよ…
+    </div>
+    <button class="pill-btn" onclick="actuallyCloseCoach()" style="margin-top:10px;background:var(--pink-light)">
+      ごめんね、閉じる
+    </button>
+  </div>
+</div>
+
+<!-- ===== ネタバレサイト誘導ポップアップ ===== -->
+<div class="spoiler-overlay" id="spoiler-overlay" style="display:none">
+  <div class="spoiler-message">
+    <div style="font-size:32px;margin-bottom:14px">📞</div>
+    <div style="font-weight:800;color:var(--text);font-size:16px">
+      くまちょんへのお問い合わせはこちら
+    </div>
+    <div style="font-size:12px;color:var(--text-light);margin:12px 0;line-height:1.6">
+      ご不明点・ご意見・苦情など、<br>
+      くまちょんが（たぶん）お答えします。<br>
+      <small>※ AIは対応できません</small>
+    </div>
+    <div id="spoiler-countdown" style="font-size:13px;color:var(--pink);font-weight:700;margin-bottom:10px">
+      ⏱️ <span id="countdown-seconds">3</span>秒後に自動でお問い合わせページに遷移します...
+    </div>
+    <a href="https://example.com" target="_blank" class="spoiler-link-btn">
+      お問い合わせページへ →
+    </a>
+    <button class="pill-btn" onclick="closeSpoilerOverlay()" style="margin-top:10px;background:var(--pink-light)">
+      閉じる
+    </button>
+  </div>
+</div>
+
+<!-- ===== クッキーバナー（消えない）===== -->
+<div class="cookie-banner" id="cookie-banner">
+  <span class="cookie-label">くまちょんより</span>
+  <div class="cookie-text">
+    🍪 このサイトはAIの最適化のため、クッキー・位置情報・睡眠データ・好きな食べ物・前世の記憶を収集します。くまちょんはAIに言われるがままにしています。
+    <a href="#" onclick="openSpoilerOverlay(); return false;" style="color:var(--pink);font-weight:700">詳細（676ページ）</a>
+  </div>
+  <button class="cookie-btn" onclick="noCookieClose()">同意して閉じる</button>
+</div>
+
+<footer class="site-footer">
+  <div>&copy; 2026 株式会社CLAVES(クラベス) All rights reserved.</div>
+</footer>
+
+<script>
+const PRODUCTS = [
+  { name: "AIが考えた最適マグカップ（用途不明β）",       desc: "AIが「マグカップっぽい」と判断した商品。くまちょんも用途を知りません。",         emoji: "☕",  price: 2980,  ramen: 7, trustIcon: "🍜", color: "#FFD6E0" },
+  { name: "スマートAIoT枕Pro（v0.2・睡眠保証外）",       desc: "睡眠をAIが最適化します。眠れるかはAIの管轄外。くまちょんも責任を負いません。",   emoji: "🛏️", price: 15800, ramen: 6, trustIcon: "🐟", color: "#DCFCE7" },
+  { name: "AIおすすめ謎の箱（中身はAIのみ知る）",        desc: "中身はAIが厳選します。返品・交換不可。くまちょんも中身を知りません。",           emoji: "📦",  price: 9999,  ramen: 8, trustIcon: "🍜", color: "#EDE9FE" },
+  { name: "次世代AIシューズ（右足のみ）",                 desc: "左足は「AI学習中」のため販売停止中。右足だけでも大丈夫とAIが言っています。",      emoji: "👟",  price: 24800, ramen: 5, trustIcon: "🐟", color: "#FFF4CC" },
+  { name: "Bluetooth対応AIタオル（通信機能なし）",        desc: "Bluetoothは搭載されていません。AIが「付いてる」と誤学習しました。くまちょん謝罪済み。", emoji: "🧻", price: 4500, ramen: 4, trustIcon: "🍜", color: "#FEE2E2" },
+  { name: "AI対応メモ帳（インターネット非接続・AI非対応）", desc: "ただのメモ帳です。AIが商品名を付けました。くまちょんは止めませんでした。",      emoji: "📝",  price: 1200,  ramen: 9, trustIcon: "🐟", color: "#E0F2FE" },
+];
+
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function renderProducts() {
+  const shuffledProducts = shuffleArray(PRODUCTS.map((p, idx) => ({...p, originalIndex: idx})));
+  document.getElementById('products-grid').innerHTML = shuffledProducts.map((p) => `
+    <div class="product-card" data-original-index="${p.originalIndex}">
+      <div class="product-emoji-wrap" style="background:${p.color}">
+        ${p.emoji}
+      </div>
+      <div class="product-tag"></div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-desc">${p.desc}</div>
+      <div class="product-price">¥${p.price.toLocaleString()}<span class="product-tax">税込</span></div>
+      <button class="btn-maybe" onclick="event.stopPropagation(); alert('🛒 カートに追加しました（多分）\\nカートの中身はAIが管理しています（くまちょんは把握していません）')">🛒 カートに追加</button>
+      <button class="btn-buy" onclick="goPurchase(${p.originalIndex})">今すぐ購入✨（AI確認中）</button>
+    </div>
+  `).join('');
+  refreshRamenTrust();
+}
+
+function getShakyRamen(baseRamen) {
+  return Math.floor(Math.random() * 10) + 1;
+}
+
+function buildTrustIcons(icon, count) {
+  return icon.repeat(count);
+}
+
+function refreshRamenTrust() {
+  document.querySelectorAll('.product-card').forEach((card) => {
+    const index = Number(card.dataset.originalIndex);
+    const product = PRODUCTS[index];
+    if (!product) return;
+    const shakyRamen = getShakyRamen(product.ramen);
+    const trustIcon = Math.random() < 0.95 ? '🍜' : '🐟';
+    const tag = card.querySelector('.product-tag');
+    if (!tag) return;
+    tag.textContent = `くまちょん信頼度 ${buildTrustIcons(trustIcon, shakyRamen)} `;
+  });
+}
+
+let priceInterval = null;
+let couponApplied = false;
+let currentProduct = null;
+
+function goPurchase(i) {
+  const p = PRODUCTS[i];
+  currentProduct = p;
+  couponApplied = false;
+  document.getElementById('s-name').textContent = p.name;
+  document.getElementById('coupon-input').value = '';
+  document.getElementById('coupon-result').style.display = 'none';
+  document.getElementById('price-note').textContent = '※ AIが最終確認中のため、価格は2秒ごとに変動します（くまちょんも知りません）';
+  updatePrice(p);
+  if (priceInterval) clearInterval(priceInterval);
+  priceInterval = setInterval(() => updatePrice(p), 2000);
+  document.getElementById('page-list').classList.remove('active');
+  document.getElementById('page-purchase').classList.add('active');
+  window.scrollTo(0, 0);
+  // コーチマーク関連をクリア
+  clearTimeout(idleTimer);
+  document.getElementById('coach-bubble').style.display = 'none';
+  document.querySelectorAll('.coach-spotlight').forEach(el => el.classList.remove('coach-spotlight'));
+}
+
+function updatePrice(p) {
+  if (couponApplied) {
+    // クーポン適用時：商品無料、送料爆上がり
+    const subtotal = 0;
+    const shipping = 999999999;
+    const aiFee = 0;
+    const total = subtotal + shipping + aiFee;
+    document.getElementById('s-subtotal').textContent = '¥0（クーポン適用）';
+    document.getElementById('s-shipping').textContent = '¥' + shipping.toLocaleString();
+    document.getElementById('s-aifee').textContent = '¥0（クーポン特典）';
+    document.getElementById('s-total').textContent = '¥' + total.toLocaleString();
+  } else {
+    // 通常時：2秒ごとに変動
+    const subtotal = p.price * 47 + (Math.random() * 600 - 300);
+    const shipping = Math.floor(Math.random() * 3000 + 300);
+    const aiFee = Math.floor(Math.random() * 300 + 50);
+    const total = subtotal + shipping + aiFee;
+    document.getElementById('s-subtotal').textContent = '¥' + subtotal.toLocaleString('ja-JP', {maximumFractionDigits: 2});
+    document.getElementById('s-shipping').textContent = '¥' + shipping.toLocaleString();
+    document.getElementById('s-aifee').textContent = '¥' + aiFee + '（変動中）';
+    document.getElementById('s-total').textContent = '¥' + Math.round(total).toLocaleString();
+  }
+}
+
+function showList() {
+  if (priceInterval) clearInterval(priceInterval);
+  document.getElementById('page-purchase').classList.remove('active');
+  document.getElementById('page-list').classList.add('active');
+  window.scrollTo(0, 0);
+  // アイドルタイマー再開
+  coachShown = false;
+  startIdleTimer();
+}
+
+// クーポン適用
+function applyCoupon() {
+  const code = document.getElementById('coupon-input').value.trim().toUpperCase();
+  const resultDiv = document.getElementById('coupon-result');
+
+  if (code === 'KUMA-FREE-2026') {
+    // 有効なクーポン
+    couponApplied = true;
+    if (priceInterval) clearInterval(priceInterval);
+    priceInterval = null;
+
+    resultDiv.innerHTML = `
+      <div style="background:var(--mint-light);border:2px solid var(--mint);border-radius:var(--radius-sm);padding:10px;margin-top:8px">
+        <strong style="color:var(--mint)">🎉 クーポン適用成功！</strong><br>
+        <span style="font-size:11px;color:var(--text-mid)">
+          おめでとうございます！商品代金が<strong style="color:var(--pink)">無料</strong>になりました！<br>
+          （送料は別途かかります。AIが最適化した結果です。くまちょんは関与していません。）
+        </span>
+      </div>
+    `;
+    resultDiv.style.display = 'block';
+
+    document.getElementById('price-note').innerHTML = '※ クーポン適用により価格が確定しました（AIがクーポンを検証済み）';
+
+    updatePrice(currentProduct);
+
+    alert('🎉 おめでとうございます！\n\n商品代金が無料になりました！\n\n※ 送料は別途 ¥999,999,999 かかります\n（AIが最適な送料を計算しました。くまちょんも驚いています。）');
+  } else if (code === '') {
+    alert('クーポンコードを入力してください！\n\nヒント: KUMA-FREE-2025（内緒だよ）');
+  } else {
+    // 無効なクーポン
+    resultDiv.innerHTML = `
+      <div style="background:var(--pink-pale);border:2px solid var(--pink);border-radius:var(--radius-sm);padding:10px;margin-top:8px">
+        <strong style="color:var(--pink)">❌ 無効なクーポンです</strong><br>
+        <span style="font-size:11px;color:var(--text-mid)">
+          「${code}」は使えません。AIが確認しました。<br>
+          ヒント: 有効なコードはこのページのどこかに書いてあるよ（AIが漏らしちゃった）
+        </span>
+      </div>
+    `;
+    resultDiv.style.display = 'block';
+  }
+}
+
+// 大きな「購入を確定する」→ 実はキャンセル
+function handleCancel() {
+  alert('AIが処理をキャンセルしました。\n\nくまちょんよりお詫び申し上げます。');
+  // アラート後にポップアップ表示
+  openSpoilerOverlay();
+}
+// 小さな「キャンセルしない」→ 実は購入完了
+function handleConfirm() {
+  alert('❌ ご注文はキャンセルされました。\n\nAIが「キャンセルしない＝キャンセル」と判断しました。\nくまちょんはAIを信じていたので把握していませんでした。');
+  // アラート後にポップアップ表示
+  openSpoilerOverlay();
+}
+
+// お問い合わせポップアップ用タイマー
+let spoilerCountdownTimer = null;
+let spoilerRedirectTimer = null;
+
+// ネタバレサイト誘導ポップアップを開く（5秒後に自動遷移）
+function openSpoilerOverlay() {
+  // 既存のタイマーをクリア
+  clearSpoilerTimers();
+
+  // カウントダウン表示をリセット
+  document.getElementById('countdown-seconds').textContent = '3';
+  document.getElementById('spoiler-overlay').style.display = 'flex';
+
+  // カウントダウン開始
+  let seconds = 3;
+  spoilerCountdownTimer = setInterval(() => {
+    seconds--;
+    document.getElementById('countdown-seconds').textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(spoilerCountdownTimer);
+    }
+  }, 1000);
+
+  // 3秒後に自動遷移
+  spoilerRedirectTimer = setTimeout(() => {
+    window.open('https://example.com', '_blank');
+  }, 3000);
+}
+
+// ネタバレサイト誘導ポップアップを閉じる
+function closeSpoilerOverlay() {
+  clearSpoilerTimers();
+  document.getElementById('spoiler-overlay').style.display = 'none';
+}
+
+// タイマーをクリア
+function clearSpoilerTimers() {
+  if (spoilerCountdownTimer) {
+    clearInterval(spoilerCountdownTimer);
+    spoilerCountdownTimer = null;
+  }
+  if (spoilerRedirectTimer) {
+    clearTimeout(spoilerRedirectTimer);
+    spoilerRedirectTimer = null;
+  }
+}
+
+let cookieClicks = 0;
+function noCookieClose() {
+  cookieClicks++;
+  if (cookieClicks < 3) {
+    alert('AIが同意内容を検証中です。\nあと' + (3 - cookieClicks) + '回クリックで閉じられる予定です（AIが言っています）');
+  } else if (cookieClicks < 5) {
+    alert('AIが「本当に同意しますか？」と確認中です。\nくまちょんもAIに聞いています。しばらくお待ちください。');
+  } else {
+    const b = document.getElementById('cookie-banner');
+    b.style.transition = 'bottom 0.3s';
+    b.style.bottom = '-90px';
+    setTimeout(() => {
+      b.style.bottom = '0px';
+      alert('AIがバナーを再表示しました。\nくまちょんもAIを止められませんでした。引き続きご同意をお願いします。');
+      cookieClicks = 0;
+    }, 800);
+  }
+}
+
+// ピル型ボタン選択
+function selectPill(btn) {
+  const group = btn.parentElement;
+  group.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// 支払い方法選択（選んだ方と逆になる）
+function selectPayment(selected) {
+  const resultEl = document.getElementById('payment-result');
+  const buttons = resultEl.parentElement.querySelectorAll('.pill-btn');
+
+  buttons.forEach(b => b.classList.remove('selected'));
+
+  if (selected === 'salmon') {
+    // 鮭払いを選んだらラーメン払いになる
+    buttons[0].classList.add('selected');
+    resultEl.textContent = '🍜 ラーメン払い　手数料：¥謎（AIが最適化しました）';
+  } else {
+    // ラーメン払いを選んだら鮭払いになる
+    buttons[1].classList.add('selected');
+    resultEl.textContent = '🐟 鮭払い　手数料：¥謎（AIが最適化しました）';
+  }
+}
+
+function closeOptimizationGate() {
+  const overlay = document.getElementById('opt-overlay');
+  overlay.style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('opt-trigger-btn').textContent = '🤖 AI最適化中…';
+}
+
+function openOptimizationGate() {
+  const overlay = document.getElementById('opt-overlay');
+  const msg = document.getElementById('opt-text');
+  const okBtn = document.getElementById('opt-ok-btn');
+  const yesBtn = document.getElementById('opt-yes-btn');
+  const noBtn = document.getElementById('opt-no-btn');
+
+  msg.innerHTML =
+    'くまちょんショップを快適に使うには、AI最適化が必要です。<br>' +
+    'AI最適化を開始しますか？';
+  yesBtn.style.display = 'inline-block';
+  noBtn.style.display = 'inline-block';
+  okBtn.style.display = 'none';
+
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function answerOptimization(answer) {
+  const msg = document.getElementById('opt-text');
+  const okBtn = document.getElementById('opt-ok-btn');
+  const yesBtn = document.getElementById('opt-yes-btn');
+  const noBtn = document.getElementById('opt-no-btn');
+
+  if (answer === 'yes' || answer === 'ok') {
+    closeOptimizationGate();
+    return;
+  }
+
+  msg.innerHTML =
+    'そんなこと言わずにAI最適化しようよ…！<br>' +
+    'くまちょんもAIを信じています。<br>' +
+    'Noは受け付け終了しました。OKで進んでください。';
+  yesBtn.style.display = 'none';
+  noBtn.style.display = 'none';
+  okBtn.style.display = 'inline-block';
+}
+
+renderProducts();
+setInterval(() => {
+  if (!document.getElementById('page-list').classList.contains('active')) return;
+  refreshRamenTrust();
+}, 10000);
+
+// ===== 表示数変更 =====
+function changeDisplayCount(value) {
+  const grid = document.getElementById('products-grid');
+
+  if (value === '3.5') {
+    // 3.5件モード：3つ+半分を表示
+    grid.classList.add('half-mode');
+    alert('表示数を3.5件に変更しました！\n\n3つと…半分だけ表示するよ！\n（AIが「3.5件」を文字通り解釈しました）');
+  } else {
+    // その他は従来通り
+    grid.classList.remove('half-mode');
+    alert('表示数を変更しました\n（実際には変わりません。AIの仕様です）');
+  }
+}
+
+// ===== コーチマーク（強制チュートリアル）=====
+let idleTimer = null;
+let coachShown = false;
+let targetProductIndex = null;
+
+function startIdleTimer() {
+  // 商品一覧ページでのみ動作
+  if (!document.getElementById('page-list').classList.contains('active')) return;
+  if (coachShown) return;
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(showCoachMark, 20000); // 20秒
+}
+
+function resetIdleTimer() {
+  clearTimeout(idleTimer);
+  coachShown = false;
+  startIdleTimer();
+}
+
+function showCoachMark() {
+  // 商品一覧ページでのみ動作
+  if (!document.getElementById('page-list').classList.contains('active')) return;
+  if (coachShown) return;
+  coachShown = true;
+
+  // ランダムに商品を選択
+  const cards = document.querySelectorAll('.product-card');
+  if (cards.length === 0) return;
+  targetProductIndex = Math.floor(Math.random() * cards.length);
+  const targetCard = cards[targetProductIndex];
+
+  // スポットライト適用
+  targetCard.classList.add('coach-spotlight');
+  targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // 吹き出し表示（スクロール完了後）
+  setTimeout(() => {
+    const bubble = document.getElementById('coach-bubble');
+    // 商品カード内の「今すぐ購入」ボタンを取得
+    const buyBtn = targetCard.querySelector('.btn-buy');
+    const btnRect = buyBtn.getBoundingClientRect();
+
+    // ボタンの下に配置
+    let top = btnRect.bottom + window.scrollY + 10;
+    let left = btnRect.left;
+
+    // 画面右端からはみ出さないように
+    if (left + 300 > window.innerWidth) {
+      left = window.innerWidth - 316;
+    }
+    // 画面左端からはみ出さないように
+    if (left < 16) {
+      left = 16;
+    }
+
+    bubble.style.top = top + 'px';
+    bubble.style.left = left + 'px';
+    bubble.style.display = 'block';
+  }, 600);
+}
+
+function tryCloseCoach() {
+  // 悲しみオーバーレイを表示
+  document.getElementById('sad-overlay').style.display = 'flex';
+}
+
+function actuallyCloseCoach() {
+  document.getElementById('sad-overlay').style.display = 'none';
+  document.getElementById('coach-bubble').style.display = 'none';
+  document.querySelectorAll('.coach-spotlight').forEach(el => {
+    el.classList.remove('coach-spotlight');
+  });
+  // 閉じても再度タイマー開始（クソUI）
+  coachShown = false;
+  startIdleTimer();
+}
+
+function coachBuyNow() {
+  // 選択された商品の購入ページへ
+  const cards = document.querySelectorAll('.product-card');
+  if (cards[targetProductIndex]) {
+    const btn = cards[targetProductIndex].querySelector('.btn-buy');
+    if (btn) btn.click();
+  }
+  // コーチマークを閉じる
+  document.getElementById('sad-overlay').style.display = 'none';
+  document.getElementById('coach-bubble').style.display = 'none';
+  document.querySelectorAll('.coach-spotlight').forEach(el => {
+    el.classList.remove('coach-spotlight');
+  });
+  coachShown = false;
+}
+
+// カート操作時にタイマーリセット
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('btn-maybe') ||
+      e.target.classList.contains('btn-buy')) {
+    clearTimeout(idleTimer);
+    coachShown = true; // 操作したら出さない
+  }
+});
+
+// タイマー開始
+startIdleTimer();
+
+// ===== ブラウザバック検知 =====
+// ダミー履歴を追加
+history.pushState(null, '', location.href);
+
+// 戻るボタンが押されたとき
+window.addEventListener('popstate', function(e) {
+  // ネタバレポップアップを表示
+  openSpoilerOverlay();
+  // 再度履歴を追加（何度でも発動するように）
+  history.pushState(null, '', location.href);
+});
+
+// ===== ランダム購入ボタン（逃げる） =====
+function escapeButton() {
+  const btn = document.getElementById('random-buy-btn');
+  btn.classList.add('escaping');
+
+  // 画面内のランダムな位置に逃げる
+  const maxX = window.innerWidth - btn.offsetWidth - 30;
+  const maxY = window.innerHeight - btn.offsetHeight - 100; // クッキーバナー分余白
+
+  const newX = Math.max(20, Math.floor(Math.random() * maxX));
+  const newY = Math.max(100, Math.floor(Math.random() * maxY));
+
+  btn.style.right = 'auto';
+  btn.style.left = newX + 'px';
+  btn.style.bottom = 'auto';
+  btn.style.top = newY + 'px';
+
+  // 少し待ってからふわふわアニメーション再開
+  setTimeout(() => {
+    btn.classList.remove('escaping');
+  }, 500);
+}
+
+function randomPurchase() {
+  // ランダムに商品を選んで購入ページへ
+  const randomIndex = Math.floor(Math.random() * PRODUCTS.length);
+  goPurchase(randomIndex);
+}
+</script>
+</body>
+</html>
