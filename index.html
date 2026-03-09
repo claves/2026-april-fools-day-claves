@@ -125,6 +125,67 @@
     }
     .cart-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #E06080; }
     @keyframes cartBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+    .cart-btn.floating-cart,
+    .cart-btn.escaping {
+      position: fixed;
+      top: 84px;
+      right: 24px;
+      left: auto;
+      z-index: 1100;
+      transform: none;
+    }
+    .cart-btn.floating-cart {
+      transition: none;
+    }
+    .cart-btn.escaping {
+      animation: none;
+      transition: none;
+    }
+    .cart-btn.is-vanishing {
+      animation: cartFadeOut 0.45s ease forwards;
+    }
+    .cart-btn.is-appearing {
+      animation: cartReappear 0.75s ease;
+    }
+    @keyframes cartFadeOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+        visibility: hidden;
+      }
+    }
+    @keyframes cartReappear {
+      0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.94);
+      }
+      65% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.03);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .cart-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      margin-left: 6px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: white;
+      color: var(--pink);
+      font-size: 10px;
+      font-weight: 800;
+    }
     .ai-version {
       background: var(--lavender-light);
       color: var(--lavender);
@@ -396,6 +457,32 @@
       color: var(--text-light);
       text-align: right;
       margin-top: 4px;
+    }
+    .order-items-summary {
+      display: grid;
+      gap: 8px;
+    }
+    .order-item-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1.5px dashed var(--border);
+      font-size: 11px;
+      color: var(--text-mid);
+    }
+    .order-item-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .order-item-name {
+      flex: 1;
+      line-height: 1.5;
+    }
+    .order-item-meta {
+      color: var(--text-light);
+      white-space: nowrap;
+      font-weight: 700;
     }
 
     .section-title {
@@ -934,6 +1021,203 @@
       box-shadow: 0 1px 0 #D0507A;
     }
 
+    /* ===== サイドバーカート ===== */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(74,46,26,0.28);
+      z-index: 1050;
+      display: none;
+    }
+    .cart-overlay.active {
+      display: block;
+    }
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(380px, calc(100vw - 20px));
+      height: 100vh;
+      background: linear-gradient(180deg, #fff 0%, #fff7fb 100%);
+      border-left: 3px solid var(--pink);
+      box-shadow: -12px 0 28px rgba(255,143,171,0.22);
+      transform: translateX(100%);
+      transition: transform 0.28s ease;
+      z-index: 1101;
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-drawer.active {
+      transform: translateX(0);
+    }
+    .cart-head {
+      padding: 18px 16px 14px;
+      border-bottom: 2px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: rgba(255,255,255,0.9);
+    }
+    .cart-head h3 {
+      font-family: 'Kaisei Decol', serif;
+      font-size: 20px;
+      color: var(--bear-brown);
+    }
+    .cart-close {
+      border: 2px solid var(--border);
+      background: white;
+      color: var(--text-mid);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: inherit;
+    }
+    .cart-copy {
+      padding: 10px 16px 0;
+      font-size: 11px;
+      line-height: 1.7;
+      color: var(--text-mid);
+    }
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px 16px;
+      display: grid;
+      gap: 12px;
+    }
+    .cart-empty {
+      background: white;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--text-light);
+    }
+    .cart-item {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: 0 4px 0 var(--pink-light);
+    }
+    .cart-item-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .cart-item-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .cart-item-price {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--pink);
+      white-space: nowrap;
+    }
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .qty-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--pink-pale);
+      border-radius: 999px;
+      padding: 4px;
+    }
+    .qty-btn {
+      border: none;
+      background: white;
+      color: var(--pink);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: inherit;
+      box-shadow: 0 2px 0 var(--pink-light);
+    }
+    .qty-value {
+      min-width: 40px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--bear-brown);
+    }
+    .cart-remove {
+      border: 2px dashed var(--border);
+      background: white;
+      color: var(--text-light);
+      border-radius: 999px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: inherit;
+    }
+    .cart-subtotal {
+      font-size: 11px;
+      color: var(--text-mid);
+      font-weight: 700;
+    }
+    .cart-foot {
+      border-top: 2px dashed var(--border);
+      padding: 14px 16px 92px;
+      background: white;
+      box-shadow: 0 -6px 20px rgba(255,143,171,0.08);
+    }
+    .cart-summary-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-mid);
+      margin-bottom: 8px;
+    }
+    .cart-summary-line strong {
+      color: var(--text);
+    }
+    .cart-checkout {
+      width: 100%;
+      margin-top: 10px;
+      background: linear-gradient(135deg, var(--mint) 0%, var(--pink) 100%);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #D0507A;
+    }
+    .cart-checkout:disabled {
+      background: #f4c9d5;
+      box-shadow: 0 4px 0 #d8a9b7;
+      cursor: not-allowed;
+    }
+    .cart-foot-note {
+      margin-top: 8px;
+      font-size: 9px;
+      color: var(--text-light);
+      line-height: 1.6;
+      text-align: center;
+    }
+
     /* ===== ランダム購入ボタン（右下固定・ふわふわ・逃げる） ===== */
     .random-buy-btn {
       position: fixed;
@@ -1016,6 +1300,11 @@
         padding: 7px 12px;
         font-size: 11px;
       }
+      .cart-btn.floating-cart,
+      .cart-btn.escaping {
+        top: 70px;
+        right: 12px;
+      }
 
       /* クッキーバナー */
       .cookie-banner {
@@ -1039,6 +1328,21 @@
       /* 商品一覧下部余白 */
       .products-grid {
         padding-bottom: 360px;
+      }
+      .cart-drawer {
+        width: min(100vw, 360px);
+      }
+      .cart-head {
+        padding: 14px 12px 12px;
+      }
+      .cart-copy,
+      .cart-items,
+      .cart-foot {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+      .cart-foot {
+        padding-bottom: 104px;
       }
       .site-footer {
         margin: 12px 12px 120px;
@@ -1078,7 +1382,10 @@
     </div>
     <div class="header-right">
       <button class="ai-opt-btn" id="opt-trigger-btn" type="button" onclick="openOptimizationGate()">🤖 AI最適化する</button>
-      <button class="cart-btn" onclick="alert('🛒 カートを開こうとしたよ！\n\nでもAIがまだ読み込み中…\n（永遠に読み込み中です）')">🛒 カート?</button>
+      <button class="cart-btn" id="cart-trigger-btn" type="button" data-cart-state="idle" data-cart-teleport-count="0" data-cart-hidden-count="0" data-cart-looping="false" onclick="handleCartTriggerClick()">
+        🛒 カート
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
     </div>
   </div>
 
@@ -1124,6 +1431,30 @@
 
 </div>
 
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart(false)"></div>
+<aside class="cart-drawer" id="cart-drawer" aria-hidden="true">
+  <div class="cart-head">
+    <h3>くまちょんカート</h3>
+    <button class="cart-close" type="button" onclick="toggleCart(false)">×</button>
+  </div>
+  <div class="cart-copy">
+    AIがあなたのために集めた商品です。逃げるけど、捕まえたら購入画面へ連れていけます。
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-foot">
+    <div class="cart-summary-line">
+      <span>商品点数</span>
+      <strong id="cart-total-items">0点</strong>
+    </div>
+    <div class="cart-summary-line">
+      <span>概算合計</span>
+      <strong id="cart-total-price">¥0</strong>
+    </div>
+    <button class="cart-checkout" id="cart-checkout-btn" type="button" onclick="goPurchaseFromCart()" disabled>このまま購入へ進む</button>
+    <div class="cart-foot-note">※ AIが途中で気を変える可能性はあります。くまちょんは止められません。</div>
+  </div>
+</aside>
+
 
 <!-- ===================== 購入ページ ===================== -->
 <div id="page-purchase" class="page">
@@ -1158,10 +1489,7 @@
     <!-- 注文サマリー -->
     <div class="order-card">
       <h3>🛒 ご注文内容（AIが確認しました・多分）</h3>
-      <div class="order-row">
-        <span id="s-name" style="font-size:11px;max-width:320px">商品名</span>
-        <span style="color:var(--text-light);font-size:11px">×47個</span>
-      </div>
+      <div class="order-items-summary" id="order-items-summary"></div>
       <div class="order-row">
         <span>小計</span><span id="s-subtotal" style="font-weight:700">¥計算中…</span>
       </div>
@@ -1444,7 +1772,7 @@ function renderProducts() {
       <div class="product-name">${p.name}</div>
       <div class="product-desc">${p.desc}</div>
       <div class="product-price">¥${p.price.toLocaleString()}<span class="product-tax">税込</span></div>
-      <button class="btn-maybe" onclick="event.stopPropagation(); alert('🛒 カートに追加しました（多分）\\nカートの中身はAIが管理しています（くまちょんは把握していません）')">🛒 カートに追加</button>
+      <button class="btn-maybe" onclick="event.stopPropagation(); addToCart(${p.originalIndex})">🛒 カートに追加</button>
       <button class="btn-buy" onclick="goPurchase(${p.originalIndex})">今すぐ購入✨（AI確認中）</button>
     </div>
   `).join('');
@@ -1474,50 +1802,123 @@ function refreshRamenTrust() {
 
 let priceInterval = null;
 let couponApplied = false;
-let currentProduct = null;
+let currentOrderItems = [];
+let purchaseMode = 'single';
+let cartItems = [];
+let isCartOpen = false;
+let cartTriggerCooldown = false;
+let cartTriggerLoopTimer = null;
 
-function goPurchase(i) {
-  const p = PRODUCTS[i];
-  currentProduct = p;
+function getProduct(index) {
+  return PRODUCTS[index] || null;
+}
+
+function getCartTotalItems() {
+  return cartItems.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+function getCartBaseSubtotal() {
+  return cartItems.reduce((sum, item) => {
+    const product = getProduct(item.index);
+    return product ? sum + product.price * item.quantity : sum;
+  }, 0);
+}
+
+function getOrderTotalQuantity() {
+  return currentOrderItems.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+function resetPurchaseUi() {
   couponApplied = false;
-  document.getElementById('s-name').textContent = p.name;
   document.getElementById('coupon-input').value = '';
   document.getElementById('coupon-result').style.display = 'none';
   document.getElementById('price-note').textContent = '※ AIが最終確認中のため、価格は2秒ごとに変動します（くまちょんも知りません）';
-  updatePrice(p);
-  if (priceInterval) clearInterval(priceInterval);
-  priceInterval = setInterval(() => updatePrice(p), 2000);
-  document.getElementById('page-list').classList.remove('active');
-  document.getElementById('page-purchase').classList.add('active');
-  window.scrollTo(0, 0);
-  // コーチマーク関連をクリア
-  clearTimeout(idleTimer);
-  document.getElementById('coach-bubble').style.display = 'none';
-  document.querySelectorAll('.coach-spotlight').forEach(el => el.classList.remove('coach-spotlight'));
 }
 
-function updatePrice(p) {
+function renderOrderSummary() {
+  const container = document.getElementById('order-items-summary');
+  if (currentOrderItems.length === 0) {
+    container.innerHTML = `
+      <div class="order-item-row">
+        <span class="order-item-name">AIが注文内容を見失いました</span>
+        <span class="order-item-meta">×0個</span>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = currentOrderItems.map((item) => {
+    const product = getProduct(item.index);
+    if (!product) return '';
+    return `
+      <div class="order-item-row">
+        <span class="order-item-name">${product.name}</span>
+        <span class="order-item-meta">×${item.quantity}個</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function updatePrice() {
+  const quantity = getOrderTotalQuantity();
+  const subtotalBase = currentOrderItems.reduce((sum, item) => {
+    const product = getProduct(item.index);
+    return product ? sum + product.price * item.quantity : sum;
+  }, 0);
+
   if (couponApplied) {
-    // クーポン適用時：商品無料、送料爆上がり
-    const subtotal = 0;
     const shipping = 999999999;
-    const aiFee = 0;
-    const total = subtotal + shipping + aiFee;
-    document.getElementById('s-subtotal').textContent = '¥0（クーポン適用）';
+    const total = shipping;
+    document.getElementById('s-subtotal').textContent = `¥0（${quantity}個ぶん無料）`;
     document.getElementById('s-shipping').textContent = '¥' + shipping.toLocaleString();
     document.getElementById('s-aifee').textContent = '¥0（クーポン特典）';
     document.getElementById('s-total').textContent = '¥' + total.toLocaleString();
-  } else {
-    // 通常時：2秒ごとに変動
-    const subtotal = p.price * 47 + (Math.random() * 600 - 300);
-    const shipping = Math.floor(Math.random() * 3000 + 300);
-    const aiFee = Math.floor(Math.random() * 300 + 50);
-    const total = subtotal + shipping + aiFee;
-    document.getElementById('s-subtotal').textContent = '¥' + subtotal.toLocaleString('ja-JP', {maximumFractionDigits: 2});
-    document.getElementById('s-shipping').textContent = '¥' + shipping.toLocaleString();
-    document.getElementById('s-aifee').textContent = '¥' + aiFee + '（変動中）';
-    document.getElementById('s-total').textContent = '¥' + Math.round(total).toLocaleString();
+    return;
   }
+
+  const quantityNoise = quantity > 0 ? (Math.random() * 600 - 300) : 0;
+  const subtotal = subtotalBase + quantityNoise;
+  const shipping = Math.floor(Math.random() * 3000 + 300 + quantity * 12);
+  const aiFee = Math.floor(Math.random() * 300 + 50 + quantity);
+  const total = subtotal + shipping + aiFee;
+
+  document.getElementById('s-subtotal').textContent = '¥' + subtotal.toLocaleString('ja-JP', { maximumFractionDigits: 2 });
+  document.getElementById('s-shipping').textContent = '¥' + shipping.toLocaleString();
+  document.getElementById('s-aifee').textContent = '¥' + aiFee.toLocaleString() + '（変動中）';
+  document.getElementById('s-total').textContent = '¥' + Math.round(total).toLocaleString();
+}
+
+function openPurchasePage() {
+  renderOrderSummary();
+  resetPurchaseUi();
+  updatePrice();
+  if (priceInterval) clearInterval(priceInterval);
+  priceInterval = setInterval(() => updatePrice(), 2000);
+  document.getElementById('page-list').classList.remove('active');
+  document.getElementById('page-purchase').classList.add('active');
+  toggleCart(false);
+  window.scrollTo(0, 0);
+  clearTimeout(idleTimer);
+  document.getElementById('coach-bubble').style.display = 'none';
+  document.querySelectorAll('.coach-spotlight').forEach((el) => el.classList.remove('coach-spotlight'));
+}
+
+function goPurchase(i) {
+  const product = getProduct(i);
+  if (!product) return;
+  purchaseMode = 'single';
+  currentOrderItems = [{ index: i, quantity: 1 }];
+  openPurchasePage();
+}
+
+function goPurchaseFromCart() {
+  if (cartItems.length === 0) {
+    alert('カートが空っぽです。\n\nAIが先に気持ちだけ購入しました。商品も入れてください。');
+    return;
+  }
+  purchaseMode = 'cart';
+  currentOrderItems = cartItems.map((item) => ({ ...item }));
+  openPurchasePage();
 }
 
 function showList() {
@@ -1525,22 +1926,251 @@ function showList() {
   document.getElementById('page-purchase').classList.remove('active');
   document.getElementById('page-list').classList.add('active');
   window.scrollTo(0, 0);
-  // アイドルタイマー再開
   coachShown = false;
   startIdleTimer();
 }
 
-// クーポン適用
+function renderCart() {
+  const cartItemsEl = document.getElementById('cart-items');
+  const totalItems = getCartTotalItems();
+  const totalPrice = getCartBaseSubtotal();
+
+  document.getElementById('cart-count').textContent = totalItems;
+  document.getElementById('cart-total-items').textContent = `${totalItems}点`;
+  document.getElementById('cart-total-price').textContent = '¥' + totalPrice.toLocaleString();
+  document.getElementById('cart-checkout-btn').disabled = totalItems === 0;
+
+  if (cartItems.length === 0) {
+    cartItemsEl.innerHTML = `
+      <div class="cart-empty">
+        まだ何も入っていません。<br>
+        くまちょんがAIに探させています。<br>
+        商品カードの「カートに追加」から集めてください。
+      </div>
+    `;
+    return;
+  }
+
+  cartItemsEl.innerHTML = cartItems.map((item) => {
+    const product = getProduct(item.index);
+    if (!product) return '';
+    const subtotal = product.price * item.quantity;
+    return `
+      <div class="cart-item">
+        <div class="cart-item-head">
+          <div class="cart-item-name">${product.name}</div>
+          <div class="cart-item-price">¥${product.price.toLocaleString()}</div>
+        </div>
+        <div class="cart-item-controls">
+          <div class="qty-control">
+            <button class="qty-btn" type="button" onclick="changeCartQuantity(${item.index}, -1)">-</button>
+            <span class="qty-value">${item.quantity}個</span>
+            <button class="qty-btn" type="button" onclick="changeCartQuantity(${item.index}, 1)">+</button>
+          </div>
+          <div class="cart-subtotal">小計 ¥${subtotal.toLocaleString()}</div>
+          <button class="cart-remove" type="button" onclick="removeFromCart(${item.index})">削除する</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleCart(open) {
+  isCartOpen = open;
+  const drawer = document.getElementById('cart-drawer');
+  const overlay = document.getElementById('cart-overlay');
+  drawer.classList.toggle('active', open);
+  overlay.classList.toggle('active', open);
+  drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+}
+
+function addToCart(index) {
+  const product = getProduct(index);
+  if (!product) return;
+  const existing = cartItems.find((item) => item.index === index);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cartItems.push({ index, quantity: 1 });
+  }
+  renderCart();
+  toggleCart(true);
+  clearTimeout(idleTimer);
+  coachShown = true;
+}
+
+function changeCartQuantity(index, delta) {
+  const item = cartItems.find((entry) => entry.index === index);
+  if (!item) return;
+  item.quantity += delta;
+  if (item.quantity <= 0) {
+    removeFromCart(index);
+    return;
+  }
+  renderCart();
+}
+
+function removeFromCart(index) {
+  cartItems = cartItems.filter((item) => item.index !== index);
+  renderCart();
+}
+
+function moveEscapingButton(btn, topMin = 90) {
+  btn.classList.add('floating-cart');
+  const maxX = Math.max(20, window.innerWidth - btn.offsetWidth - 20);
+  const maxY = Math.max(topMin, window.innerHeight - btn.offsetHeight - 100);
+  const prevX = parseInt(btn.dataset.cartX || '-1', 10);
+  const prevY = parseInt(btn.dataset.cartY || '-1', 10);
+  let nextX = prevX;
+  let nextY = prevY;
+
+  for (let attempt = 0; attempt < 8; attempt++) {
+    nextX = Math.floor(Math.random() * maxX);
+    nextY = Math.floor(Math.random() * (maxY - topMin + 1)) + topMin;
+    if (Math.abs(nextX - prevX) > 24 || Math.abs(nextY - prevY) > 24) break;
+  }
+
+  btn.dataset.cartX = `${nextX}`;
+  btn.dataset.cartY = `${nextY}`;
+  btn.style.left = `${nextX}px`;
+  btn.style.right = 'auto';
+  btn.style.top = `${nextY}px`;
+  btn.style.bottom = 'auto';
+}
+
+function showEscapingCartStep() {
+  const btn = document.getElementById('cart-trigger-btn');
+  if (!btn) return;
+  if (btn.dataset.cartLooping !== 'true') return;
+
+  btn.classList.remove('is-appearing');
+  btn.classList.remove('is-vanishing');
+
+  cartTriggerLoopTimer = setTimeout(() => {
+    if (btn.dataset.cartLooping !== 'true') return;
+    btn.dataset.cartState = 'hidden';
+    btn.dataset.cartHiddenCount = `${Number(btn.dataset.cartHiddenCount || '0') + 1}`;
+    btn.classList.add('is-vanishing');
+
+    cartTriggerLoopTimer = setTimeout(() => {
+      if (btn.dataset.cartLooping !== 'true') return;
+      btn.classList.remove('is-vanishing');
+      moveEscapingButton(btn, 70);
+      btn.classList.add('is-appearing');
+      btn.dataset.cartState = 'shown';
+      btn.dataset.cartTeleportCount = `${Number(btn.dataset.cartTeleportCount || '0') + 1}`;
+      setTimeout(() => {
+        btn.classList.remove('is-appearing');
+      }, 760);
+      cartTriggerLoopTimer = setTimeout(showEscapingCartStep, 0);
+    }, 1000);
+  }, 500);
+}
+
+function triggerCartEscape(showDelay = 1000) {
+  const btn = document.getElementById('cart-trigger-btn');
+  if (!btn) return;
+  if (cartTriggerLoopTimer) {
+    clearTimeout(cartTriggerLoopTimer);
+    cartTriggerLoopTimer = null;
+  }
+
+  btn.classList.remove('is-appearing');
+  btn.classList.remove('is-vanishing');
+
+  cartTriggerLoopTimer = setTimeout(() => {
+    if (btn.dataset.cartLooping !== 'true') return;
+    btn.dataset.cartState = 'hidden';
+    btn.dataset.cartHiddenCount = `${Number(btn.dataset.cartHiddenCount || '0') + 1}`;
+    btn.classList.add('is-vanishing');
+
+    cartTriggerLoopTimer = setTimeout(() => {
+      if (btn.dataset.cartLooping !== 'true') return;
+      btn.classList.remove('is-vanishing');
+      moveEscapingButton(btn, 70);
+      btn.classList.add('is-appearing');
+      btn.dataset.cartState = 'shown';
+      btn.dataset.cartTeleportCount = `${Number(btn.dataset.cartTeleportCount || '0') + 1}`;
+      setTimeout(() => {
+        btn.classList.remove('is-appearing');
+      }, 760);
+      showEscapingCartStep();
+    }, 1000);
+  }, showDelay);
+}
+
+function startEscapingCartLoop(immediateEscape = false) {
+  const btn = document.getElementById('cart-trigger-btn');
+  if (!btn) return;
+  if (cartTriggerLoopTimer) clearTimeout(cartTriggerLoopTimer);
+
+  cartTriggerCooldown = true;
+  btn.dataset.cartState = 'starting';
+  btn.dataset.cartTeleportCount = '0';
+  btn.dataset.cartHiddenCount = '0';
+  btn.dataset.cartLooping = 'true';
+  triggerCartEscape(immediateEscape ? 0 : 1000);
+}
+
+function stopEscapingCartLoop() {
+  const btn = document.getElementById('cart-trigger-btn');
+  if (!btn) return;
+  if (cartTriggerLoopTimer) {
+    clearTimeout(cartTriggerLoopTimer);
+    cartTriggerLoopTimer = null;
+  }
+  btn.dataset.cartLooping = 'false';
+  btn.dataset.cartState = 'caught';
+  btn.classList.remove('is-vanishing');
+  btn.classList.remove('is-appearing');
+  cartTriggerCooldown = false;
+}
+
+function resetCartTriggerPosition() {
+  const btn = document.getElementById('cart-trigger-btn');
+  if (cartTriggerLoopTimer) {
+    clearTimeout(cartTriggerLoopTimer);
+    cartTriggerLoopTimer = null;
+  }
+  cartTriggerCooldown = false;
+  btn.classList.remove('floating-cart');
+  btn.classList.remove('escaping');
+  btn.classList.remove('is-vanishing');
+  btn.classList.remove('is-appearing');
+  btn.style.left = '';
+  btn.style.right = '';
+  btn.style.top = '';
+  btn.style.bottom = '';
+  btn.dataset.cartState = 'idle';
+  btn.dataset.cartTeleportCount = '0';
+  btn.dataset.cartHiddenCount = '0';
+  btn.dataset.cartLooping = 'false';
+  btn.dataset.cartX = '';
+  btn.dataset.cartY = '';
+}
+
+function handleCartTriggerClick() {
+  if (!document.getElementById('page-list').classList.contains('active')) return;
+  const btn = document.getElementById('cart-trigger-btn');
+  if (btn.classList.contains('is-vanishing')) return;
+  if (btn.dataset.cartState === 'idle') {
+    startEscapingCartLoop(true);
+    return;
+  }
+  if (btn.dataset.cartLooping === 'true' && !btn.classList.contains('is-appearing')) {
+    triggerCartEscape(0);
+  }
+  toggleCart(!isCartOpen);
+}
+
 function applyCoupon() {
   const code = document.getElementById('coupon-input').value.trim().toUpperCase();
   const resultDiv = document.getElementById('coupon-result');
 
   if (code === 'KUMA-FREE-2026') {
-    // 有効なクーポン
     couponApplied = true;
     if (priceInterval) clearInterval(priceInterval);
     priceInterval = null;
-
     resultDiv.innerHTML = `
       <div style="background:var(--mint-light);border:2px solid var(--mint);border-radius:var(--radius-sm);padding:10px;margin-top:8px">
         <strong style="color:var(--mint)">🎉 クーポン適用成功！</strong><br>
@@ -1551,16 +2181,12 @@ function applyCoupon() {
       </div>
     `;
     resultDiv.style.display = 'block';
-
     document.getElementById('price-note').innerHTML = '※ クーポン適用により価格が確定しました（AIがクーポンを検証済み）';
-
-    updatePrice(currentProduct);
-
+    updatePrice();
     alert('🎉 おめでとうございます！\n\n商品代金が無料になりました！\n\n※ 送料は別途 ¥999,999,999 かかります\n（AIが最適な送料を計算しました。くまちょんも驚いています。）');
   } else if (code === '') {
     alert('クーポンコードを入力してください！\n\nヒント: KUMA-FREE-2025（内緒だよ）');
   } else {
-    // 無効なクーポン
     resultDiv.innerHTML = `
       <div style="background:var(--pink-pale);border:2px solid var(--pink);border-radius:var(--radius-sm);padding:10px;margin-top:8px">
         <strong style="color:var(--pink)">❌ 無効なクーポンです</strong><br>
@@ -1574,33 +2200,23 @@ function applyCoupon() {
   }
 }
 
-// 大きな「購入を確定する」→ 実はキャンセル
 function handleCancel() {
   alert('AIが処理をキャンセルしました。\n\nくまちょんよりお詫び申し上げます。');
-  // アラート後にポップアップ表示
-  openSpoilerOverlay();
-}
-// 小さな「キャンセルしない」→ 実は購入完了
-function handleConfirm() {
-  alert('❌ ご注文はキャンセルされました。\n\nAIが「キャンセルしない＝キャンセル」と判断しました。\nくまちょんはAIを信じていたので把握していませんでした。');
-  // アラート後にポップアップ表示
   openSpoilerOverlay();
 }
 
-// お問い合わせポップアップ用タイマー
+function handleConfirm() {
+  alert('❌ ご注文はキャンセルされました。\n\nAIが「キャンセルしない＝キャンセル」と判断しました。\nくまちょんはAIを信じていたので把握していませんでした。');
+  openSpoilerOverlay();
+}
+
 let spoilerCountdownTimer = null;
 let spoilerRedirectTimer = null;
 
-// ネタバレサイト誘導ポップアップを開く（5秒後に自動遷移）
 function openSpoilerOverlay() {
-  // 既存のタイマーをクリア
   clearSpoilerTimers();
-
-  // カウントダウン表示をリセット
   document.getElementById('countdown-seconds').textContent = '3';
   document.getElementById('spoiler-overlay').style.display = 'flex';
-
-  // カウントダウン開始
   let seconds = 3;
   spoilerCountdownTimer = setInterval(() => {
     seconds--;
@@ -1609,25 +2225,21 @@ function openSpoilerOverlay() {
       clearInterval(spoilerCountdownTimer);
     }
   }, 1000);
-
-  // 3秒後に自動遷移
   spoilerRedirectTimer = setTimeout(() => {
     const autoOpenWindow = window.open('https://example.com', '_blank', 'noopener,noreferrer');
     if (autoOpenWindow) autoOpenWindow.opener = null;
   }, 3000);
 }
 
-// ネタバレサイト誘導ポップアップを閉じる
 function closeSpoilerOverlay(shouldOpenContact = false) {
   clearSpoilerTimers();
   document.getElementById('spoiler-overlay').style.display = 'none';
   if (shouldOpenContact) {
-      const contactWindow = window.open('https://example.com', '_blank', 'noopener,noreferrer');
-      if (contactWindow) contactWindow.opener = null;
+    const contactWindow = window.open('https://example.com', '_blank', 'noopener,noreferrer');
+    if (contactWindow) contactWindow.opener = null;
   }
 }
 
-// タイマーをクリア
 function clearSpoilerTimers() {
   if (spoilerCountdownTimer) {
     clearInterval(spoilerCountdownTimer);
@@ -1658,26 +2270,20 @@ function noCookieClose() {
   }
 }
 
-// ピル型ボタン選択
 function selectPill(btn) {
   const group = btn.parentElement;
-  group.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('selected'));
+  group.querySelectorAll('.pill-btn').forEach((b) => b.classList.remove('selected'));
   btn.classList.add('selected');
 }
 
-// 支払い方法選択（選んだ方と逆になる）
 function selectPayment(selected) {
   const resultEl = document.getElementById('payment-result');
   const buttons = resultEl.parentElement.querySelectorAll('.pill-btn');
-
-  buttons.forEach(b => b.classList.remove('selected'));
-
+  buttons.forEach((b) => b.classList.remove('selected'));
   if (selected === 'salmon') {
-    // 鮭払いを選んだらラーメン払いになる
     buttons[0].classList.add('selected');
     resultEl.textContent = '🍜 ラーメン払い　手数料：¥謎（AIが最適化しました）';
   } else {
-    // ラーメン払いを選んだら鮭払いになる
     buttons[1].classList.add('selected');
     resultEl.textContent = '🐟 鮭払い　手数料：¥謎（AIが最適化しました）';
   }
@@ -1696,14 +2302,12 @@ function openOptimizationGate() {
   const okBtn = document.getElementById('opt-ok-btn');
   const yesBtn = document.getElementById('opt-yes-btn');
   const noBtn = document.getElementById('opt-no-btn');
-
   msg.innerHTML =
     'くまちょんショップを快適に使うには、AI最適化が必要です。<br>' +
     'AI最適化を開始しますか？';
   yesBtn.style.display = 'inline-block';
   noBtn.style.display = 'inline-block';
   okBtn.style.display = 'none';
-
   overlay.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
@@ -1713,12 +2317,10 @@ function answerOptimization(answer) {
   const okBtn = document.getElementById('opt-ok-btn');
   const yesBtn = document.getElementById('opt-yes-btn');
   const noBtn = document.getElementById('opt-no-btn');
-
   if (answer === 'yes' || answer === 'ok') {
     closeOptimizationGate();
     return;
   }
-
   msg.innerHTML =
     'そんなこと言わずにAI最適化しようよ…！<br>' +
     'くまちょんもAIを信じています。<br>' +
@@ -1729,37 +2331,32 @@ function answerOptimization(answer) {
 }
 
 renderProducts();
+renderCart();
 setInterval(() => {
   if (!document.getElementById('page-list').classList.contains('active')) return;
   refreshRamenTrust();
 }, 10000);
 
-// ===== 表示数変更 =====
 function changeDisplayCount(value) {
   const grid = document.getElementById('products-grid');
-
   if (value === '3.5') {
-    // 3.5件モード：3つ+半分を表示
     grid.classList.add('half-mode');
     alert('表示数を3.5件に変更しました！\n\n3つと…半分だけ表示するよ！\n（AIが「3.5件」を文字通り解釈しました）');
   } else {
-    // その他は従来通り
     grid.classList.remove('half-mode');
     alert('表示数を変更しました\n（実際には変わりません。AIの仕様です）');
   }
 }
 
-// ===== コーチマーク（強制チュートリアル）=====
 let idleTimer = null;
 let coachShown = false;
 let targetProductIndex = null;
 
 function startIdleTimer() {
-  // 商品一覧ページでのみ動作
   if (!document.getElementById('page-list').classList.contains('active')) return;
   if (coachShown) return;
   clearTimeout(idleTimer);
-  idleTimer = setTimeout(showCoachMark, 20000); // 20秒
+  idleTimer = setTimeout(showCoachMark, 20000);
 }
 
 function resetIdleTimer() {
@@ -1769,41 +2366,27 @@ function resetIdleTimer() {
 }
 
 function showCoachMark() {
-  // 商品一覧ページでのみ動作
   if (!document.getElementById('page-list').classList.contains('active')) return;
   if (coachShown) return;
   coachShown = true;
-
-  // ランダムに商品を選択
   const cards = document.querySelectorAll('.product-card');
   if (cards.length === 0) return;
   targetProductIndex = Math.floor(Math.random() * cards.length);
   const targetCard = cards[targetProductIndex];
-
-  // スポットライト適用
   targetCard.classList.add('coach-spotlight');
   targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-  // 吹き出し表示（スクロール完了後）
   setTimeout(() => {
     const bubble = document.getElementById('coach-bubble');
-    // 商品カード内の「今すぐ購入」ボタンを取得
     const buyBtn = targetCard.querySelector('.btn-buy');
     const btnRect = buyBtn.getBoundingClientRect();
-
-    // ボタンの下に配置
     let top = btnRect.bottom + window.scrollY + 10;
     let left = btnRect.left;
-
-    // 画面右端からはみ出さないように
     if (left + 300 > window.innerWidth) {
       left = window.innerWidth - 316;
     }
-    // 画面左端からはみ出さないように
     if (left < 16) {
       left = 16;
     }
-
     bubble.style.top = top + 'px';
     bubble.style.left = left + 'px';
     bubble.style.display = 'block';
@@ -1811,60 +2394,52 @@ function showCoachMark() {
 }
 
 function tryCloseCoach() {
-  // 悲しみオーバーレイを表示
   document.getElementById('sad-overlay').style.display = 'flex';
 }
 
 function actuallyCloseCoach() {
   document.getElementById('sad-overlay').style.display = 'none';
   document.getElementById('coach-bubble').style.display = 'none';
-  document.querySelectorAll('.coach-spotlight').forEach(el => {
+  document.querySelectorAll('.coach-spotlight').forEach((el) => {
     el.classList.remove('coach-spotlight');
   });
-  // 閉じても再度タイマー開始（クソUI）
   coachShown = false;
   startIdleTimer();
 }
 
 function addToCartFromSadOverlay() {
   if (typeof targetProductIndex === 'number' && PRODUCTS[targetProductIndex]) {
-    goPurchase(targetProductIndex);
+    addToCart(targetProductIndex);
   } else if (PRODUCTS.length > 0) {
-    goPurchase(0);
+    addToCart(0);
   }
   document.getElementById('sad-overlay').style.display = 'none';
-  coachShown = true; // 購入遷移後は同じ20秒ポップアップを再表示しない
+  coachShown = true;
 }
 
 function coachBuyNow() {
-  // 選択された商品の購入ページへ
   const cards = document.querySelectorAll('.product-card');
   if (cards[targetProductIndex]) {
     const btn = cards[targetProductIndex].querySelector('.btn-buy');
     if (btn) btn.click();
   }
-  // コーチマークを閉じる
   document.getElementById('sad-overlay').style.display = 'none';
   document.getElementById('coach-bubble').style.display = 'none';
-  document.querySelectorAll('.coach-spotlight').forEach(el => {
+  document.querySelectorAll('.coach-spotlight').forEach((el) => {
     el.classList.remove('coach-spotlight');
   });
   coachShown = false;
 }
 
-// カート操作時にタイマーリセット
 document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('btn-maybe') ||
-      e.target.classList.contains('btn-buy')) {
+  if (e.target.classList.contains('btn-maybe') || e.target.classList.contains('btn-buy')) {
     clearTimeout(idleTimer);
-    coachShown = true; // 操作したら出さない
+    coachShown = true;
   }
 });
 
-// ブラウザバック時はお問い合わせ導線を介さず直接example.comを新タブで開く
 function setupBrowserBackRedirect() {
   if (!window.history || !window.history.pushState) return;
-
   window.history.pushState({ kumaBackTrap: true }, '', window.location.href);
   window.addEventListener('popstate', () => {
     closeSpoilerOverlay(false);
@@ -1875,35 +2450,14 @@ function setupBrowserBackRedirect() {
 }
 
 setupBrowserBackRedirect();
-
-// タイマー開始
 startIdleTimer();
 
-// ===== ランダム購入ボタン（逃げる） =====
 function escapeButton() {
   const btn = document.getElementById('random-buy-btn');
-  btn.classList.add('escaping');
-
-  // 画面内のランダムな位置に逃げる
-  const maxX = window.innerWidth - btn.offsetWidth - 30;
-  const maxY = window.innerHeight - btn.offsetHeight - 100; // クッキーバナー分余白
-
-  const newX = Math.max(20, Math.floor(Math.random() * maxX));
-  const newY = Math.max(100, Math.floor(Math.random() * maxY));
-
-  btn.style.right = 'auto';
-  btn.style.left = newX + 'px';
-  btn.style.bottom = 'auto';
-  btn.style.top = newY + 'px';
-
-  // 少し待ってからふわふわアニメーション再開
-  setTimeout(() => {
-    btn.classList.remove('escaping');
-  }, 500);
+  moveEscapingButton(btn, 100);
 }
 
 function randomPurchase() {
-  // ランダムに商品を選んで購入ページへ
   const randomIndex = Math.floor(Math.random() * PRODUCTS.length);
   goPurchase(randomIndex);
 }
