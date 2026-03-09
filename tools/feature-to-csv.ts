@@ -23,6 +23,30 @@ interface TestStep {
 interface ParseResult {
   steps: TestStep[];
   featureName: string;
+  scenarios: ScenarioViewpoint[];
+}
+
+interface ParsedStep {
+  keyword: string;
+  content: string;
+}
+
+interface ScenarioViewpoint {
+  viewpointId: string;
+  scenarioKey: string;
+  feature: string;
+  featureFile: string;
+  sourceRef: string;
+  category: string;
+  scenario: string;
+  precondition: string;
+  action: string;
+  expectedResult: string;
+  changeImpact: string;
+  retestRequired: string;
+  assignee: string;
+  status: string;
+  comment: string;
 }
 
 function parseFeatureFile(filePath: string): ParseResult {
@@ -30,16 +54,65 @@ function parseFeatureFile(filePath: string): ParseResult {
   const lines = content.split('\n');
 
   const steps: TestStep[] = [];
+  const scenarios: ScenarioViewpoint[] = [];
   let currentFeature = '';
   let currentScenario = '';
+  let currentScenarioKey = '';
+  let currentScenarioLine = 0;
+  let currentCategory = '未分類';
+  let currentScenarioCategory = '未分類';
+  let currentBackgroundSteps: ParsedStep[] = [];
+  let currentScenarioSteps: ParsedStep[] = [];
+  const usedScenarioKeys = new Set<string>();
+  const featureFile = path.basename(filePath);
 
-  for (const line of lines) {
+  function flushScenario() {
+    if (!currentFeature || !currentScenario || currentScenario === 'Background (共通前提)') {
+      return;
+    }
+
+    const viewpointId = `${toFeatureCode(featureFile)}__${currentScenarioKey}`;
+    const preconditionParts = [
+      ...currentBackgroundSteps
+        .filter((step) => step.keyword === 'Given')
+        .map((step) => step.content),
+      ...currentScenarioSteps
+        .filter((step) => step.keyword === 'Given')
+        .map((step) => step.content),
+    ];
+    const actionParts = currentScenarioSteps
+      .filter((step) => step.keyword === 'When')
+      .map((step) => step.content);
+    const expectedParts = currentScenarioSteps
+      .filter((step) => step.keyword === 'Then' || step.keyword === 'And' || step.keyword === 'But')
+      .map((step) => step.content);
+
+    scenarios.push({
+      viewpointId,
+      scenarioKey: currentScenarioKey,
+      feature: currentFeature,
+      featureFile,
+      sourceRef: `${featureFile}:${currentScenarioLine}`,
+      category: currentScenarioCategory,
+      scenario: currentScenario,
+      precondition: joinForCell(preconditionParts, '前提なし'),
+      action: joinForCell(actionParts, '操作なし'),
+      expectedResult: joinForCell(expectedParts, ''),
+      changeImpact: '',
+      retestRequired: '',
+      assignee: '',
+      status: '',
+      comment: '',
+    });
+  }
+
+  for (const [index, line] of lines.entries()) {
     const trimmed = line.trim();
 
     // Skip empty lines and comments
     if (!trimmed || trimmed.startsWith('#')) {
-      // Extract feature name from comment if it's the language declaration
-      if (trimmed.startsWith('# language:')) continue;
+      if (trimmed.startsWith('# ===') && trimmed.endsWith('==='))
+        currentCategory = trimmed.replace(/^# ===\s*/, '').replace(/\s*===$/, '').trim();
       continue;
     }
 
@@ -51,13 +124,24 @@ function parseFeatureFile(filePath: string): ParseResult {
 
     // Scenario line
     if (trimmed.startsWith('Scenario:')) {
-      currentScenario = trimmed.replace('Scenario:', '').trim();
+      flushScenario();
+      const parsedScenario = parseScenarioLabel(trimmed.replace('Scenario:', '').trim());
+      currentScenario = parsedScenario.title;
+      currentScenarioKey = parsedScenario.key;
+      validateScenarioKey(currentScenarioKey, filePath, index + 1);
+      assertUniqueScenarioKey(currentScenarioKey, usedScenarioKeys, filePath, index + 1);
+      currentScenarioLine = index + 1;
+      currentScenarioCategory = currentCategory;
+      currentScenarioSteps = [];
       continue;
     }
 
     // Background (treat as setup)
     if (trimmed.startsWith('Background:')) {
+      flushScenario();
       currentScenario = 'Background (共通前提)';
+      currentScenarioKey = '';
+      currentBackgroundSteps = [];
       continue;
     }
 
@@ -73,12 +157,26 @@ function parseFeatureFile(filePath: string): ParseResult {
         result: '',
         comment: '',
       });
+
+      const parsedStep = {
+        keyword: normalizeStepKeyword(stepMatch[1], currentScenarioSteps),
+        content: stepMatch[2],
+      };
+
+      if (currentScenario === 'Background (共通前提)') {
+        currentBackgroundSteps.push(parsedStep);
+      } else {
+        currentScenarioSteps.push(parsedStep);
+      }
     }
   }
+
+  flushScenario();
 
   return {
     steps,
     featureName: currentFeature,
+    scenarios,
   };
 }
 
@@ -106,6 +204,108 @@ function generateCSV(allSteps: TestStep[]): string {
   return [header, ...rows].join('\n');
 }
 
+function generateScenarioCSV(scenarios: ScenarioViewpoint[]): string {
+  const header =
+    '観点ID,機能,featureファイル,仕様参照,観点カテゴリ,シナリオ,前提条件,操作,期待結果,変更影響有無,再確認要否,実施者,結果,備考';
+  const rows = scenarios.map((scenario) =>
+    [
+      escapeCSV(scenario.viewpointId),
+      escapeCSV(scenario.feature),
+      escapeCSV(scenario.featureFile),
+      escapeCSV(scenario.sourceRef),
+      escapeCSV(scenario.category),
+      escapeCSV(scenario.scenario),
+      escapeCSV(scenario.precondition),
+      escapeCSV(scenario.action),
+      escapeCSV(scenario.expectedResult),
+      escapeCSV(scenario.changeImpact),
+      escapeCSV(scenario.retestRequired),
+      escapeCSV(scenario.assignee),
+      escapeCSV(scenario.status),
+      escapeCSV(scenario.comment),
+    ].join(',')
+  );
+
+  return [header, ...rows].join('\n');
+}
+
+function normalizeStepKeyword(keyword: string, currentScenarioSteps: ParsedStep[]): string {
+  if (keyword !== 'And' && keyword !== 'But') {
+    return keyword;
+  }
+
+  const previousKeyword = currentScenarioSteps.at(-1)?.keyword;
+  return previousKeyword ?? 'Then';
+}
+
+function joinForCell(parts: string[], fallback: string): string {
+  if (parts.length === 0) {
+    return fallback;
+  }
+
+  return parts.map((part, index) => `${index + 1}. ${part}`).join('\n');
+}
+
+function parseScenarioLabel(rawScenario: string): { key: string; title: string } {
+  const explicitKeyMatch = rawScenario.match(/^\[(.+?)\]\s+(.+)$/);
+  if (explicitKeyMatch) {
+    return {
+      key: toScenarioKey(explicitKeyMatch[1]),
+      title: explicitKeyMatch[2].trim(),
+    };
+  }
+
+  return {
+    key: `TEMP-${toScenarioKey(rawScenario)}`,
+    title: rawScenario,
+  };
+}
+
+function toScenarioKey(value: string): string {
+  return value
+    .trim()
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toUpperCase();
+}
+
+function validateScenarioKey(key: string, filePath: string, lineNumber: number): void {
+  if (key.startsWith('TEMP-')) {
+    return;
+  }
+
+  if (!/^[A-Z0-9]+(?:-[A-Z0-9]+)*$/.test(key)) {
+    throw new Error(
+      `Invalid scenario key "${key}" at ${path.basename(filePath)}:${lineNumber}. ` +
+        'Use uppercase letters, numbers, and hyphens only.'
+    );
+  }
+}
+
+function assertUniqueScenarioKey(
+  key: string,
+  usedScenarioKeys: Set<string>,
+  filePath: string,
+  lineNumber: number
+): void {
+  if (usedScenarioKeys.has(key)) {
+    throw new Error(
+      `Duplicate scenario key "${key}" at ${path.basename(filePath)}:${lineNumber}. ` +
+        'Scenario keys must be unique within a feature file.'
+    );
+  }
+
+  usedScenarioKeys.add(key);
+}
+
+function toFeatureCode(fileName: string): string {
+  return fileName.replace(/\.feature$/, '').replace(/[^a-zA-Z0-9]+/g, '-').toUpperCase();
+}
+
+function toSafeFileName(value: string): string {
+  return value.replace(/[^a-zA-Z0-9\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/g, '-');
+}
+
 function main() {
   const specsDir = path.join(process.cwd(), 'specs');
   const outputDir = path.join(process.cwd(), 'output');
@@ -130,38 +330,22 @@ function main() {
   featureFiles.forEach((f) => console.log(`  - ${path.basename(f)}`));
 
   // Parse all feature files
-  const allSteps: TestStep[] = [];
   for (const filePath of featureFiles) {
     console.log(`\nParsing: ${path.basename(filePath)}`);
     const result = parseFeatureFile(filePath);
     console.log(`  -> ${result.steps.length} steps extracted`);
-    allSteps.push(...result.steps);
+    console.log(`  -> ${result.scenarios.length} scenarios extracted`);
+
+    const viewpointOutputPath = path.join(
+      outputDir,
+      `${toSafeFileName(result.featureName)}-system-test-viewpoints.csv`
+    );
+    fs.writeFileSync(viewpointOutputPath, generateScenarioCSV(result.scenarios), 'utf-8');
+    console.log(`  -> system test viewpoints: ${viewpointOutputPath}`);
   }
 
-  // Generate CSV
-  const csv = generateCSV(allSteps);
-  const outputPath = path.join(outputDir, 'test-cases.csv');
-  fs.writeFileSync(outputPath, csv, 'utf-8');
+  console.log('\nSystem test viewpoint CSVs generated.');
 
-  console.log(`\nCSV generated: ${outputPath}`);
-  console.log(`Total steps: ${allSteps.length}`);
-
-  // Also generate individual CSVs per feature
-  const featureGroups = new Map<string, TestStep[]>();
-  for (const step of allSteps) {
-    if (!featureGroups.has(step.feature)) {
-      featureGroups.set(step.feature, []);
-    }
-    featureGroups.get(step.feature)!.push(step);
-  }
-
-  console.log('\nPer-feature CSVs:');
-  for (const [feature, steps] of featureGroups) {
-    const safeName = feature.replace(/[^a-zA-Z0-9\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/g, '-');
-    const featureOutputPath = path.join(outputDir, `${safeName}.csv`);
-    fs.writeFileSync(featureOutputPath, generateCSV(steps), 'utf-8');
-    console.log(`  - ${featureOutputPath} (${steps.length} steps)`);
-  }
 }
 
 main();
